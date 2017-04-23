@@ -1,9 +1,6 @@
 package beans;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,7 +18,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,27 +68,60 @@ public class UserManagment implements UserManagmentLocal{
 	@Lock(LockType.WRITE)
 	@Override
 	public User login(String username, String password) {
-		// TODO Auto-generated method stub
+		if(!checkParams(username, password))
+			return null;
+		
+		if(activeUsers.stream().anyMatch(e -> e.getUsername().equals(username)))
+			return null;
+		
+		if(registeredUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
+			User u = registeredUsers.stream().filter(e -> e.equals(username))
+											 .findFirst()
+											 .get();
+			activeUsers.add(u);
+			try {
+				saveUser(u, ACTIVE_PATH);
+			} catch (URISyntaxException | IOException e1) {
+			}
+			return u;
+		}
+							
+		
 		return null;
 	}
 
 	@Lock(LockType.WRITE)
 	@Override
 	public Boolean logout(User logout) {
-		// TODO Auto-generated method stub
-		return null;
+		if(!checkParams(logout.getUsername(), logout.getPassword()))
+			return false;
+		
+		if(activeUsers.stream().anyMatch(e -> e.equals(logout))){
+			activeUsers.remove(logout);
+			//TODO: Delete from file
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Lock(LockType.READ)
 	@Override
-	public List<User> getAllUsers() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> getAllRegisteredUsers() {
+		return registeredUsers;
 	}
 	
-	private Boolean checkParams(String username, String password, String address, String alias){
-		if(username == "" || username.equals(null) || password == "" || password.equals(null) || address == "" || address.equals(null))
-			return false;
+	@Lock(LockType.READ)
+	@Override
+	public List<User> getAllActiveUsers(){
+		return activeUsers;
+	}
+	
+	private Boolean checkParams(String... args){
+		for(String arg : args){
+			if(arg == "" || arg.equals(null))
+				return false;
+		}
 		
 		return true;
 	}
@@ -132,7 +161,5 @@ public class UserManagment implements UserManagmentLocal{
 			return list;
 		}
 		return new ArrayList<>();
-	}
-	
-	
+	}	
 }
