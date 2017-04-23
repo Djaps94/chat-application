@@ -1,6 +1,9 @@
 package beans;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,6 +20,10 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.Host;
@@ -36,8 +43,9 @@ public class UserManagment implements UserManagmentLocal{
 	
 	@PostConstruct
 	private void initialise(){
-		activeUsers     = new ArrayList<>();
-		registeredUsers = new ArrayList<>();
+		activeUsers     = loadUsers(ACTIVE_PATH);
+		registeredUsers = loadUsers(REGISTER_PATH);
+		
 	}
 
 	@Lock(LockType.WRITE)
@@ -100,10 +108,31 @@ public class UserManagment implements UserManagmentLocal{
 		}
 	}
 	
-//	private void loadUsers(String destination){
-//		URL u 				= this.getClass().getClassLoader().getResource(destination);
-//		ObjectMapper mapper = new ObjectMapper();
-//	}
+	private List<User> loadUsers(String destination){
+		URL u 				= this.getClass().getClassLoader().getResource(destination);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonParser parser   = null;
+		
+		try {
+			parser = new JsonFactory().createParser(new File(u.getPath()));
+		} catch (IOException e) {
+			return new ArrayList<>();
+		}
+		
+		TypeReference<List<User>> ref = new TypeReference<List<User>>() {};
+		if(u.getPath() != ""){
+			List<User> list;
+			
+			try {
+				list = mapper.readValue(parser, ref);
+			} catch (IOException e) {
+				return new ArrayList<>();
+			}
+			
+			return list;
+		}
+		return new ArrayList<>();
+	}
 	
 	
 }
