@@ -29,27 +29,29 @@ public class UserService{
 	@GET
 	@Path("/register")
 	public Boolean register(@FormParam("username") String username, @FormParam("password") String password,
-	                       @FormParam("address") String address, @FormParam("alias") String alias){
-		Boolean notRegistered = false;
-		try { notRegistered = userBean.register(username, password, address, alias); } 
+	                        @FormParam("address") String address, @FormParam("alias") String alias){
+		
+	    Boolean registered = false;
+		try { registered = userBean.register(username, password, address, alias); } 
 		catch (UsernameExistsException e) { return false; }
 		
-		if(notRegistered) return true;
+		if(registered) return true;
 		else              return false;
 	}
 	@GET
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public User login(@FormParam("username") String username, @FormParam("password") String password){
-       try { return userBean.login(username, password); }
-       catch (InvalidCredentialsException e) { return null; }	    
+	    
+	    try { return userBean.login(username, password); }
+        catch (InvalidCredentialsException e) { return null; }	    
 	}
 	
 	@GET
 	@Path("/logout")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Boolean logout(User user){
-       return userBean.logout(user);
+        return userBean.logout(user);
 	}
 	
 	@GET

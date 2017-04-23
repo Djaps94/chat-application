@@ -77,13 +77,11 @@ public class UserManagment implements UserManagmentLocal{
 		
 		if(registeredUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
 			User u = registeredUsers.stream().filter(e -> e.equals(username))
-											 .findFirst()
-											 .get();
+			                                 .findFirst()
+			                                 .get();
 			activeUsers.add(u);
-			try {
-				saveUser(u, ACTIVE_PATH);
-			} catch (URISyntaxException | IOException e1) {
-			}
+			try { saveUser(u, ACTIVE_PATH); } 
+			catch (URISyntaxException | IOException e1) { }
 			return u;
 		}
 							
@@ -143,21 +141,15 @@ public class UserManagment implements UserManagmentLocal{
 		ObjectMapper mapper = new ObjectMapper();
 		JsonParser parser   = null;
 		
-		try {
-			parser = new JsonFactory().createParser(new File(u.getPath()));
-		} catch (IOException e) {
-			return new ArrayList<>();
-		}
+		try { parser = new JsonFactory().createParser(new File(u.getPath())); } 
+		catch (IOException e) { return new ArrayList<>(); }
 		
 		TypeReference<List<User>> ref = new TypeReference<List<User>>() {};
 		if(u.getPath() != ""){
 			List<User> list;
 			
-			try {
-				list = mapper.readValue(parser, ref);
-			} catch (IOException e) {
-				return new ArrayList<>();
-			}
+			try { list = mapper.readValue(parser, ref); } 
+			catch (IOException e) { return new ArrayList<>(); }
 			
 			return list;
 		}
