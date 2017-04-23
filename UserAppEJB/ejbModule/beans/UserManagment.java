@@ -139,7 +139,7 @@ public class UserManagment implements UserManagmentLocal{
 	}
 	
 	private List<User> loadUsers(String destination){
-		URL u 				= this.getClass().getClassLoader().getResource(destination);
+		URL u 	            = this.getClass().getClassLoader().getResource(destination);
 		ObjectMapper mapper = new ObjectMapper();
 		JsonParser parser   = null;
 		
