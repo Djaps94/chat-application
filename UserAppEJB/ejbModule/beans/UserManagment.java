@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Host;
 import model.User;
 
+
 @Startup
 @Singleton
 @Local(UserManagmentLocal.class)
@@ -161,5 +162,5 @@ public class UserManagment implements UserManagmentLocal{
 			return list;
 		}
 		return new ArrayList<>();
-	}	
+	}
 }

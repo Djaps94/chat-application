@@ -3,8 +3,8 @@
 	<name>UserAppEAR</name>
 	<comment></comment>
 	<projects>
-		<project>UserAppWEB</project>
 		<project>UserAppEJB</project>
+		<project>UserAppWEB</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
