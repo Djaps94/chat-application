@@ -5,7 +5,7 @@ import javax.ejb.Local;
 import jmsAPI.UserJMSMessage;
 
 @Local
-public interface UserMessagesInterface {
+public interface UserMessagesLocal {
     
     public void registerMessage(UserJMSMessage message);
     public void loginMessage(String username, String password);

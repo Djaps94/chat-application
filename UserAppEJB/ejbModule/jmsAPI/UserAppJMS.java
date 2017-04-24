@@ -8,7 +8,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
-import beans.UserMessagesInterface;
+import beans.UserMessagesLocal;
 
 /**
  * Message-Driven Bean implementation class for: UserAppJMS
@@ -23,7 +23,7 @@ import beans.UserMessagesInterface;
 public class UserAppJMS implements MessageListener {
     
     @EJB
-    private UserMessagesInterface messageBean;
+    private UserMessagesLocal messageBean;
     
     public UserAppJMS() { }
 	

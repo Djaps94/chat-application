@@ -11,10 +11,12 @@ import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
-import javax.jms.QueueRequestor;
+import javax.jms.QueueSender;
 import javax.jms.QueueSession;
+import javax.jms.Session;
 import javax.jms.StreamMessage;
 import javax.jms.TextMessage;
 
@@ -24,8 +26,8 @@ import jmsAPI.UserJMSMessage;
 import model.User;
 
 @Stateless
-@Local(UserMessagesInterface.class)
-public class UserMessages implements UserMessagesInterface{
+@Local(UserMessagesLocal.class)
+public class UserMessages implements UserMessagesLocal{
 
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory factory;
@@ -34,7 +36,7 @@ public class UserMessages implements UserMessagesInterface{
     private Queue chatQueue;
     
     private QueueSession session;
-    private QueueRequestor requestor;
+    private QueueSender sender;
     private Connection connection;
     
     @EJB
@@ -47,8 +49,8 @@ public class UserMessages implements UserMessagesInterface{
         try{
             this.connection = factory.createConnection();
             connection.start();
-            this.session    = (QueueSession)connection.createSession();
-            this.requestor  = new QueueRequestor(session, chatQueue);
+            this.session    = (QueueSession)connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            this.sender  = session.createSender(chatQueue);
         }
         catch(JMSException e) { return; }
     }
@@ -57,7 +59,7 @@ public class UserMessages implements UserMessagesInterface{
     public void destroy(){
         try {
             connection.stop();
-            requestor.close();
+            sender.close();
         }
         catch (JMSException e) { }
     }
@@ -68,13 +70,13 @@ public class UserMessages implements UserMessagesInterface{
             Boolean successfulRegister = userBean.register(message.getUsername(), message.getPassword(), message.getAddress(), message.getAlias());
             StreamMessage msg          = session.createStreamMessage();
             msg.setBooleanProperty("registerAnswer", successfulRegister);
-            requestor.request(msg);
+            sender.send(msg);
         }
         catch (UsernameExistsException | JMSException e) {
             try {
                 StreamMessage msg = session.createStreamMessage();
                 msg.setBooleanProperty("registerError", false);
-                requestor.request(msg);
+                sender.send(msg);
             }catch(Exception ex) { }
         }
         
@@ -84,15 +86,15 @@ public class UserMessages implements UserMessagesInterface{
     public void loginMessage(String username, String password) {
         try{
             User user         = userBean.login(username, password);
-            ObjectMessage msg = session.createObjectMessage();
-            msg.setObject(user);
-            requestor.request(msg);
+            MapMessage msg = session.createMapMessage();
+            msg.setObject("login", user);
+            sender.send(msg);
         }
         catch (InvalidCredentialsException | JMSException e) { 
             try{
                 TextMessage msg = session.createTextMessage();
                 msg.setStringProperty("error", "Invalid credentials");
-                requestor.request(msg);
+                sender.send(msg);
             }
             catch(Exception ex) { }
         }
@@ -104,7 +106,7 @@ public class UserMessages implements UserMessagesInterface{
             Boolean logout  = userBean.logout(message.getUser());
             StreamMessage m = session.createStreamMessage();
             m.setBooleanProperty("logout", logout);
-            requestor.request(m);
+            sender.send(m);
         }
         catch(JMSException e) { }
     }
@@ -113,9 +115,9 @@ public class UserMessages implements UserMessagesInterface{
     public void getRegisteredMessage() {
         try{
             ArrayList<User> users = (ArrayList<User>) userBean.getAllRegisteredUsers();
-            ObjectMessage msg = session.createObjectMessage();
-            msg.setObject(users);
-            requestor.request(msg);
+            MapMessage msg = session.createMapMessage();
+            msg.setObjectProperty("registered", users);
+            sender.send(msg);
         }
         catch(JMSException e) { }
     }
@@ -124,9 +126,9 @@ public class UserMessages implements UserMessagesInterface{
     public void getActiveMessage() {
         try{
             ArrayList<User> users = (ArrayList<User>) userBean.getAllActiveUsers();
-            ObjectMessage msg = session.createObjectMessage();
-            msg.setObject(users);
-            requestor.request(msg);   
+            MapMessage msg = session.createMapMessage();
+            msg.setObjectProperty("active", users);
+            sender.send(msg);   
         }catch(JMSException e) { }
     }
 
