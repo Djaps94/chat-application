@@ -1,11 +1,12 @@
 package beans;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -19,7 +20,6 @@ import javax.ejb.Startup;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import model.Host;
@@ -58,9 +58,9 @@ public class UserManagment implements UserManagmentLocal{
 		
 		registeredUsers.add(user);
 		try {
-			saveUser(user, REGISTER_PATH);
-		} catch (URISyntaxException | IOException e) {
-			return false;
+		    saveUser(registeredUsers, REGISTER_PATH);
+		}catch (URISyntaxException | IOException e) {
+		    return false;
 		}
 		
 		return true;
@@ -76,11 +76,11 @@ public class UserManagment implements UserManagmentLocal{
 			return null;
 		
 		if(registeredUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
-			User u = registeredUsers.stream().filter(e -> e.equals(username))
+			User u = registeredUsers.stream().filter(e -> e.getUsername().equals(username))
 			                                 .findFirst()
 			                                 .get();
 			activeUsers.add(u);
-			try { saveUser(u, ACTIVE_PATH); } 
+			try { saveUser(activeUsers, ACTIVE_PATH); } 
 			catch (URISyntaxException | IOException e1) { }
 			return u;
 		}
@@ -97,7 +97,10 @@ public class UserManagment implements UserManagmentLocal{
 		
 		if(activeUsers.stream().anyMatch(e -> e.equals(logout))){
 			activeUsers.remove(logout);
-			//TODO: Delete from file
+			
+			try { saveUser(activeUsers, ACTIVE_PATH); }
+            catch (URISyntaxException | IOException e1) { e1.printStackTrace(); }
+         
 			return true;
 		}
 		
@@ -125,13 +128,15 @@ public class UserManagment implements UserManagmentLocal{
 		return true;
 	}
 	
-	private void saveUser(User user, String destination) throws URISyntaxException, IOException{
+	private void saveUser(List<User> user, String destination) throws URISyntaxException, IOException{
 		URL u               = this.getClass().getClassLoader().getResource(destination);
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonUser     = mapper.writeValueAsString(user);
 		if(u.getPath() != ""){
-			FileWriter writer = new FileWriter(new File(u.getPath()), true);
+			PrintWriter writer = new PrintWriter(new File(u.getPath()));
+			writer.write("");
 			writer.write(jsonUser);
+			writer.flush();
 			writer.close();
 		}
 	}
@@ -143,12 +148,11 @@ public class UserManagment implements UserManagmentLocal{
 		
 		try { parser = new JsonFactory().createParser(new File(u.getPath())); } 
 		catch (IOException e) { return new ArrayList<>(); }
-		
-		TypeReference<List<User>> ref = new TypeReference<List<User>>() {};
+
 		if(u.getPath() != ""){
 			List<User> list;
 			
-			try { list = mapper.readValue(parser, ref); } 
+			try { list = new ArrayList<User>(Arrays.asList(mapper.readValue(parser, User[].class))); } 
 			catch (IOException e) { return new ArrayList<>(); }
 			
 			return list;

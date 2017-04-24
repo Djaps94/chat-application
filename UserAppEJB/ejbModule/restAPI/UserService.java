@@ -7,7 +7,9 @@ import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -19,14 +21,11 @@ import model.User;
 @Stateless
 @Path("/user")
 public class UserService{
-    
-    //TODO: Change methods to POST. 
-    //      Currently GET is only for testing.
-	
+
 	@EJB
 	private UserManagmentLocal userBean;
 	
-	@GET
+	@POST
 	@Path("/register")
 	public Boolean register(@FormParam("username") String username, @FormParam("password") String password,
 	                        @FormParam("address") String address, @FormParam("alias") String alias){
@@ -36,22 +35,23 @@ public class UserService{
 		catch (UsernameExistsException e) { return false; }
 		
 		if(registered) return true;
-		else              return false;
+		else           return false;
 	}
-	@GET
+	
+	@POST
 	@Path("/login")
 	@Produces(MediaType.APPLICATION_JSON)
 	public User login(@FormParam("username") String username, @FormParam("password") String password){
 	    
 	    try { return userBean.login(username, password); }
-        catch (InvalidCredentialsException e) { return null; }	    
+	    catch (InvalidCredentialsException e) { return null; }	    
 	}
 	
-	@GET
+	@POST
 	@Path("/logout")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Boolean logout(User user){
-        return userBean.logout(user);
+	    return userBean.logout(user);
 	}
 	
 	@GET
