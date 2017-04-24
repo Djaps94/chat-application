@@ -75,7 +75,4 @@ public class UserJMSMessage implements Serializable{
     public User getUser(){
         return u;
     }
-    
-    
-    
-    }
+}

@@ -3,6 +3,7 @@ package beans;
 import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -45,10 +46,20 @@ public class UserMessages implements UserMessagesInterface{
     public void initialise(){
         try{
             this.connection = factory.createConnection();
+            connection.start();
             this.session    = (QueueSession)connection.createSession();
             this.requestor  = new QueueRequestor(session, chatQueue);
         }
         catch(JMSException e) { return; }
+    }
+    
+    @PreDestroy
+    public void destroy(){
+        try {
+            connection.stop();
+            requestor.close();
+        }
+        catch (JMSException e) { }
     }
     
     @Override

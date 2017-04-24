@@ -18,7 +18,7 @@ import beans.UserMessagesInterface;
 		        @ActivationConfigProperty(propertyName  = "destinationType", 
 		                                  propertyValue = "javax.jms.Queue"),
 		        @ActivationConfigProperty(propertyName  = "destination",
-		                                  propertyValue = "queue/userQueue")
+		                                  propertyValue = "java:/jms/queue/userQueue")
 		})
 public class UserAppJMS implements MessageListener {
     
