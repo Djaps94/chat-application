@@ -7,7 +7,6 @@ public class Host {
 
 	private String adress;
 	private String alias;
-	private List<Host> hosts;
 	private List<User> activeUsers;
 	private List<User> registeredUsers;
 	
@@ -16,7 +15,6 @@ public class Host {
 	public Host(String adress, String alias){
 		this.adress 		 = adress;
 		this.alias  		 = alias;
-		this.hosts  		 = new ArrayList<>();
 		this.activeUsers 	 = new ArrayList<>();
 		this.registeredUsers = new ArrayList<>();
 	}
@@ -35,14 +33,6 @@ public class Host {
 		this.alias = alias;
 	}
 
-	public List<Host> getHosts() {
-		return hosts;
-	}
-
-	public void setHosts(List<Host> hosts) {
-		this.hosts = hosts;
-	}
-
 	public List<User> getActiveUsers() {
 		return activeUsers;
 	}
@@ -58,6 +48,11 @@ public class Host {
 	public void setRegisteredUsers(List<User> registeredUsers) {
 		this.registeredUsers = registeredUsers;
 	}
+
+    @Override
+    public String toString() {
+        return "Host [adress=" + adress + ", alias=" + alias +"]";
+    }
 	
 	
 }
