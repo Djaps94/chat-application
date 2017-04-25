@@ -23,6 +23,10 @@ public class UserJMSMessage implements Serializable{
     
     public UserJMSMessage() { }
     
+    public UserJMSMessage(types type){
+        this.messageType = type;
+    }
+    
     public UserJMSMessage(String username, String password, String address, String alias, types type) {
         this.username    = username;
         this.password    = password;

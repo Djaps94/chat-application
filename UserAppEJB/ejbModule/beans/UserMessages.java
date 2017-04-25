@@ -86,7 +86,7 @@ public class UserMessages implements UserMessagesLocal{
     public void loginMessage(String username, String password) {
         try{
             User user         = userBean.login(username, password);
-            MapMessage msg = session.createMapMessage();
+            MapMessage msg    = session.createMapMessage();
             msg.setObject("login", user);
             sender.send(msg);
         }
@@ -115,7 +115,7 @@ public class UserMessages implements UserMessagesLocal{
     public void getRegisteredMessage() {
         try{
             ArrayList<User> users = (ArrayList<User>) userBean.getAllRegisteredUsers();
-            MapMessage msg = session.createMapMessage();
+            MapMessage msg        = session.createMapMessage();
             msg.setObjectProperty("registered", users);
             sender.send(msg);
         }
@@ -126,7 +126,7 @@ public class UserMessages implements UserMessagesLocal{
     public void getActiveMessage() {
         try{
             ArrayList<User> users = (ArrayList<User>) userBean.getAllActiveUsers();
-            MapMessage msg = session.createMapMessage();
+            MapMessage msg        = session.createMapMessage();
             msg.setObjectProperty("active", users);
             sender.send(msg);   
         }catch(JMSException e) { }

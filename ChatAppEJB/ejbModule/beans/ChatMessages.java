@@ -15,6 +15,7 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 
 import jmsAPI.UserJMSMessage;
+import model.User;
 
 @Stateless
 @Local(ChatMessagesLocal.class)
@@ -62,27 +63,43 @@ public class ChatMessages implements ChatMessagesLocal{
     }
 
     @Override
-    public void loginMessage() {
-        // TODO Auto-generated method stub
-        
+    public void loginMessage(User u) {
+        try{
+            UserJMSMessage message = new UserJMSMessage(u, UserJMSMessage.types.LOGIN);
+            ObjectMessage msg      = session.createObjectMessage(message);
+            sender.send(msg);
+        }
+        catch(JMSException e) { }
     }
 
     @Override
-    public void logoutMessage() {
-        // TODO Auto-generated method stub
-        
+    public void logoutMessage(User u) {
+        try{
+            UserJMSMessage message = new UserJMSMessage(u, UserJMSMessage.types.LOGOUT);
+            ObjectMessage msg      = session.createObjectMessage(message);
+            sender.send(msg);
+        }
+        catch(JMSException e) { }
     }
 
     @Override
     public void getRegisteredUsers() {
-        // TODO Auto-generated method stub
-        
+        try{
+            UserJMSMessage message = new UserJMSMessage(UserJMSMessage.types.REGISTER);
+            ObjectMessage msg      = session.createObjectMessage(message);
+            sender.send(msg);
+        }
+        catch(JMSException e) { }
     }
 
     @Override
     public void getActiveUsers() {
-        // TODO Auto-generated method stub
-        
+        try{
+            UserJMSMessage message = new UserJMSMessage(UserJMSMessage.types.ACTIVE);
+            ObjectMessage msg      = session.createObjectMessage(message);
+            sender.send(msg);
+        }
+        catch(JMSException e) { }
     }
 
 }
