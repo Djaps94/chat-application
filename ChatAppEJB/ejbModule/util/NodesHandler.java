@@ -1,7 +1,6 @@
 package util;
 
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -9,18 +8,14 @@ import java.net.UnknownHostException;
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
 
+import beans.HostManagmentLocal;
 import model.Host;
 
 @Startup
@@ -39,6 +34,9 @@ public class NodesHandler implements NodesHandlerLocal{
     private String masterIpAdress;
     private String slaveAlias;
     
+    @EJB
+    private HostManagmentLocal hostBean;
+    
     @PostConstruct
     @Lock(LockType.WRITE)
     public void initialise(){
@@ -47,22 +45,16 @@ public class NodesHandler implements NodesHandlerLocal{
         if(masterIpAdress == "" || masterIpAdress == null){
             System.out.println("This is master node!");
             Host master = createHost();
-            try{
-            InetAddress adress = InetAddress.getLocalHost();
-            String ip          = adress.getHostAddress();
-            shutdownServer();
-            }
-            catch(UnknownHostException e) { }
             return;
         }
-        //if(System.getProperty(OFFSET) == null || System.getProperty(OFFSET) == ""){
+        if(System.getProperty(OFFSET) == null || System.getProperty(OFFSET) == ""){
             try{
             InetAddress adress = InetAddress.getLocalHost();
             String ip          = adress.getHostAddress();
             shutdownServer(ip+":"+ADMIN_PORT);
             }
             catch(UnknownHostException e) { }
-        //}
+        }
             
         
         Host slave = createHost();
