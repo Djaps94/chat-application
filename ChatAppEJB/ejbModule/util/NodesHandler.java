@@ -32,8 +32,7 @@ public class NodesHandler implements NodesHandlerLocal{
     private static final String SCRIPT         = "shutdown-server.sh";
     
     private String masterIpAdress;
-    private String slaveAlias;
-    
+
     @EJB
     private HostManagmentLocal hostBean;
     
@@ -41,12 +40,13 @@ public class NodesHandler implements NodesHandlerLocal{
     @Lock(LockType.WRITE)
     public void initialise(){
         masterIpAdress = System.getProperty(MASTER_IP);
-        slaveAlias     = System.getProperty(ALIAS);
         if(masterIpAdress == "" || masterIpAdress == null){
             System.out.println("This is master node!");
             Host master = createHost();
+            hostBean.addHost(master);
             return;
         }
+        
         if(System.getProperty(OFFSET) == null || System.getProperty(OFFSET) == ""){
             try{
             InetAddress adress = InetAddress.getLocalHost();
@@ -55,10 +55,11 @@ public class NodesHandler implements NodesHandlerLocal{
             }
             catch(UnknownHostException e) { }
         }
-            
+          
         
         Host slave = createHost();
         System.out.println("Slave created! Life is good!");
+        
     }
     
     
@@ -76,7 +77,7 @@ public class NodesHandler implements NodesHandlerLocal{
     }
     
     private void shutdownServer(String... ipport){
-        URL script = this.getClass().getClassLoader().getResource(SCRIPT);
+        URL script        = this.getClass().getClassLoader().getResource(SCRIPT);
         String permission = "chmod +x "+script.getPath();
         try{
             switch(ipport.length){
