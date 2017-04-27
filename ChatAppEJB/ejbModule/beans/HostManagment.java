@@ -40,7 +40,7 @@ public class HostManagment implements HostManagmentLocal{
 
     @Override
     @Lock(LockType.READ)
-    public List<Host> getAllHosts(Host host) {
+    public List<Host> getAllHosts() {
         return hosts;
         
     }

@@ -98,4 +98,8 @@ public class NodesHandler implements NodesHandlerLocal{
         catch (IOException e) { e.printStackTrace(); }
     }
     
+    public boolean isMaster(){
+        return !(masterIpAdress == null || masterIpAdress.equals(""));
+    }
+    
 }
