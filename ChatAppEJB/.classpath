@@ -13,5 +13,6 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/home/predrag/Downloads/resteasy-jackson-provider-3.1.2.Final.jar" sourcepath="/home/predrag/.m2/repository/org/jboss/resteasy/resteasy-jackson-provider/3.1.2.Final/resteasy-jackson-provider-3.1.2.Final-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

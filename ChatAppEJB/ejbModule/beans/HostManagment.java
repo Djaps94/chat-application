@@ -18,6 +18,9 @@ import model.Host;
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
 public class HostManagment implements HostManagmentLocal{
     
+    private String ownerAddress;
+    private String ownerAlias;
+    
     private List<Host> hosts;
     
     @PostConstruct
@@ -49,6 +52,22 @@ public class HostManagment implements HostManagmentLocal{
     @Lock(LockType.READ)
     public boolean contains(Host host) {
         return hosts.contains(host);
+    }
+
+    public String getOwnerAddress() {
+        return ownerAddress;
+    }
+
+    public void setOwnerAddress(String ownerAddress) {
+        this.ownerAddress = ownerAddress;
+    }
+
+    public String getOwnerAlias() {
+        return ownerAlias;
+    }
+
+    public void setOwnerAlias(String ownerAlias) {
+        this.ownerAlias = ownerAlias;
     }
 
 }
