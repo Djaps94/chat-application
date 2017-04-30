@@ -15,6 +15,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import model.Host;
+import model.User;
 
 @Stateless
 @Local(NodeRestClientLocal.class)
@@ -38,6 +39,11 @@ public class NodeRestClient implements NodeRestClientLocal{
         form.param("slaveAddress", slaveAddress);
         Entity<Form> entity = Entity.form(form);
         target.request().post(entity);
+    }
+    
+    public void addUser(String destination, User user){
+        ResteasyWebTarget target = createResteasyClient("http://"+destination+"/ChatApp/rest/chat/register");
+        target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
     }
     
     private ResteasyWebTarget createResteasyClient(String destination){

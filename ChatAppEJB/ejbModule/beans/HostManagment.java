@@ -53,6 +53,13 @@ public class HostManagment implements HostManagmentLocal{
     public boolean contains(Host host) {
         return hosts.contains(host);
     }
+    
+    @Lock(LockType.READ)
+    public Host getCurrentHost(){
+        return hosts.stream().filter(h -> h.getAdress().equals(ownerAddress))
+                             .findFirst()
+                             .get();
+    }
 
     public String getOwnerAddress() {
         return ownerAddress;

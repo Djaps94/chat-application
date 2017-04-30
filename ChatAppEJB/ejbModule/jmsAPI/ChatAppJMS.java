@@ -3,6 +3,7 @@ package jmsAPI;
 import java.util.ArrayList;
 
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -10,6 +11,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.StreamMessage;
 
+import beans.HostManagmentLocal;
 import model.User;
 
 /**
@@ -23,6 +25,9 @@ import model.User;
 		                                  propertyValue = "java:/jms/queue/chatQueue")
 		})
 public class ChatAppJMS implements MessageListener {
+    
+    @EJB
+    private HostManagmentLocal hostBean;
 
     public ChatAppJMS() {
     }
@@ -30,10 +35,7 @@ public class ChatAppJMS implements MessageListener {
     public void onMessage(Message message) {
         try{
             if(message instanceof StreamMessage){
-                if(message.propertyExists("registerAnswer")){
-                    // TODO: Send response through ws
-                    Boolean registered = message.getBooleanProperty("registerAnswer");
-                }else if(message.propertyExists("registerError")){
+                if(message.propertyExists("registerError")){
                     // TODO: Send response through ws
                     Boolean registered = message.getBooleanProperty("registerError");
                 }else if(message.propertyExists("logout")){
@@ -42,7 +44,13 @@ public class ChatAppJMS implements MessageListener {
                 }
             }
             else if(message instanceof MapMessage){
-                if(message.propertyExists("login")){
+                if(message.propertyExists("registerAnswer")){
+                    User user = (User) message.getObjectProperty("registerAnswer");
+                    if(user != null)
+                        hostBean.getCurrentHost().getRegisteredUsers().add(user);
+                    
+                }                
+                else if(message.propertyExists("login")){
                     // TODO: Send response through ws
                     User user = (User) message.getObjectProperty("login");
                 }else if(message.propertyExists("registered")){

@@ -47,23 +47,23 @@ public class UserManagment implements UserManagmentLocal{
 
 	@Lock(LockType.WRITE)
 	@Override
-	public Boolean register(String username, String password, String address, String alias){
+	public User register(String username, String password, String address, String alias){
 		if(!checkParams(username, password, address, alias))
-			return false;
+			return null;
 		
 		User user = new User(username, password, new Host(address, alias));
 		
 		if(registeredUsers.contains(user))
-			return false;
+			return null;
 		
 		registeredUsers.add(user);
 		try {
 		    saveUser(registeredUsers, REGISTER_PATH);
 		}catch (URISyntaxException | IOException e) {
-		    return false;
+		    return null;
 		}
 		
-		return true;
+		return user;
 	}
 	
 	@Lock(LockType.WRITE)

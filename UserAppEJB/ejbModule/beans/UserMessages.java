@@ -67,9 +67,9 @@ public class UserMessages implements UserMessagesLocal{
     @Override
     public void registerMessage(UserJMSMessage message) {
         try {
-            Boolean successfulRegister = userBean.register(message.getUsername(), message.getPassword(), message.getAddress(), message.getAlias());
-            StreamMessage msg          = session.createStreamMessage();
-            msg.setBooleanProperty("registerAnswer", successfulRegister);
+            User user      = userBean.register(message.getUsername(), message.getPassword(), message.getAddress(), message.getAlias());
+            MapMessage msg = session.createMapMessage();
+            msg.setObjectProperty("registerAnswer", user);
             sender.send(msg);
         }
         catch (UsernameExistsException | JMSException e) {

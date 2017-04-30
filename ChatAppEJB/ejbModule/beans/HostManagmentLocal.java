@@ -13,6 +13,7 @@ public interface HostManagmentLocal {
     public void removeHost(Host host);
     public List<Host> getAllHosts();
     public boolean contains(Host host);
+    public Host getCurrentHost();
     public String getOwnerAddress();
     public void setOwnerAddress(String ownerAddress);
     public String getOwnerAlias();

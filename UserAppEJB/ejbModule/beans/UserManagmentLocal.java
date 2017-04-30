@@ -11,7 +11,7 @@ import model.User;
 @Local
 public interface UserManagmentLocal {
 	
-	public Boolean register(String username, String password, String address, String alias) throws UsernameExistsException;
+	public User register(String username, String password, String address, String alias) throws UsernameExistsException;
 	public User login(String username, String password) throws InvalidCredentialsException;
 	public Boolean logout(User logout);
 	public List<User> getAllActiveUsers();

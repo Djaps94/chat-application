@@ -9,7 +9,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -27,15 +26,14 @@ public class UserService{
 	
 	@POST
 	@Path("/register")
-	public Boolean register(@FormParam("username") String username, @FormParam("password") String password,
+	public User register(@FormParam("username") String username, @FormParam("password") String password,
 	                        @FormParam("address") String address, @FormParam("alias") String alias){
 		
-	    Boolean registered = false;
+	    User registered = null;
 		try { registered = userBean.register(username, password, address, alias); } 
-		catch (UsernameExistsException e) { return false; }
+		catch (UsernameExistsException e) { return registered; }
 		
-		if(registered) return true;
-		else           return false;
+		return registered;
 	}
 	
 	@POST
