@@ -41,8 +41,18 @@ public class NodeRestClient implements NodeRestClientLocal{
         target.request().post(entity);
     }
     
-    public void addUser(String destination, User user){
+    public void registerUser(String destination, User user){
         ResteasyWebTarget target = createResteasyClient("http://"+destination+"/ChatApp/rest/chat/register");
+        target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
+    }
+    
+    public void addUser(String destination, User user){
+        ResteasyWebTarget target = createResteasyClient("http://"+destination+"/ChatApp/rest/chat/login");
+        target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
+    }
+    
+    public void removeUser(String destination, User user){
+        ResteasyWebTarget target = createResteasyClient("http://"+destination+"/ChatApp/rest/chat/logout");
         target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
     }
     

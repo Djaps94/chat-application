@@ -38,12 +38,24 @@ public class UserRestClient implements UserRestClientLocal{
         form.param("alias", alias);
         Entity<Form> entity = Entity.form(form);
         target.request(MediaType.APPLICATION_JSON).post(entity);
+    } 
+    
+
+    @Override
+    public void loginUser(User user) {
+        // TODO Auto-generated method stub
+        
     }
+
+    @Override
+    public void logoutUser(User user) {
+        // TODO Auto-generated method stub
+        
+    }    
     
     private ResteasyWebTarget createResteasyClient(String destination){
         ResteasyClient client    = new ResteasyClientBuilder().build();
         ResteasyWebTarget target = client.target(destination);
         return target;
     }
-
 }
