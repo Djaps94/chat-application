@@ -40,9 +40,6 @@ public class ChatAppJMS implements MessageListener {
                 if(message.propertyExists("registerError")){
                     // TODO: Send response through ws
                     Boolean registered = message.getBooleanProperty("registerError");
-                }else if(message.propertyExists("logout")){
-                    // TODO: Send response through ws
-                    Boolean logout = message.getBooleanProperty("logout");
                 }
             }
             else if(message instanceof MapMessage){
@@ -52,7 +49,7 @@ public class ChatAppJMS implements MessageListener {
                         hostBean.getCurrentHost().getRegisteredUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.registerUser(h.getAdress(), user));
-                        //TODO: Respond through ws
+                        //TODO: Respond through ws; Dont forget respond for null
                     }
                 }                
                 else if(message.propertyExists("login")){
@@ -62,6 +59,14 @@ public class ChatAppJMS implements MessageListener {
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.addUser(h.getAdress(), user));
                         
+                        //TODO: Respond through ws; Dont forget respond for null
+                    }
+                }else if(message.propertyExists("logout")){
+                    User logout = (User) message.getObjectProperty("logout");
+                    if(logout != null){
+                        hostBean.getCurrentHost().getActiveUsers().remove(logout);
+                        hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
+                                                       .forEach(h -> nodeRequester.removeUser(h.getAdress(), logout));
                         //TODO: Respond through ws
                     }
                 }

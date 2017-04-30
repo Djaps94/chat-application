@@ -2,6 +2,7 @@ package restUserAPI;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -42,7 +43,6 @@ public class UserService {
     
     @POST
     @Path("/login")
-    @Produces(MediaType.TEXT_HTML)
     public void loginUser(@FormParam("username") String username, @FormParam("password") String password){
         User u = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
                                                                         .findFirst()
@@ -54,6 +54,16 @@ public class UserService {
             chatMessages.loginMessage(u);
         else
             userRequester.loginUser(nodeHandler.getMasterAddress(), username, password);
+    }
+    
+    @POST
+    @Path("/logout")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void logoutUser(User user){
+        if(nodeHandler.isMaster())
+            chatMessages.logoutMessage(user);
+        else
+            userRequester.logoutUser(nodeHandler.getMasterAddress(), user); 
     }
 
 }

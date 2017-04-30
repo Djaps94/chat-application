@@ -91,9 +91,9 @@ public class UserManagment implements UserManagmentLocal{
 
 	@Lock(LockType.WRITE)
 	@Override
-	public Boolean logout(User logout) {
+	public User logout(User logout) {
 		if(!checkParams(logout.getUsername(), logout.getPassword()))
-			return false;
+			return null;
 		
 		if(activeUsers.stream().anyMatch(e -> e.equals(logout))){
 			activeUsers.remove(logout);
@@ -101,10 +101,10 @@ public class UserManagment implements UserManagmentLocal{
 			try { saveUser(activeUsers, ACTIVE_PATH); }
             catch (URISyntaxException | IOException e1) { e1.printStackTrace(); }
          
-			return true;
+			return logout;
 		}
 		
-		return false;
+		return null;
 	}
 
 	@Lock(LockType.READ)

@@ -37,7 +37,7 @@ public class UserRestClient implements UserRestClientLocal{
         form.param("address", address);
         form.param("alias", alias);
         Entity<Form> entity = Entity.form(form);
-        target.request(MediaType.APPLICATION_JSON).post(entity);
+        target.request().post(entity);
     } 
     
 
@@ -48,14 +48,14 @@ public class UserRestClient implements UserRestClientLocal{
         form.param("username", username);
         form.param("password", password);
         Entity<Form> entity = Entity.form(form);
-        target.request(MediaType.APPLICATION_JSON).post(entity);
+        target.request().post(entity);
         
     }
 
     @Override
-    public void logoutUser(User user) {
-        // TODO Auto-generated method stub
-        
+    public void logoutUser(String masterAddress, User user) {
+        ResteasyWebTarget target = createResteasyClient("http://"+masterAddress+"/UserApp/rest/user/logout");
+        target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
     }    
     
     private ResteasyWebTarget createResteasyClient(String destination){
