@@ -1,7 +1,5 @@
 package jmsAPI;
 
-import java.util.ArrayList;
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
@@ -13,6 +11,7 @@ import javax.jms.StreamMessage;
 
 import beans.HostManagmentLocal;
 import model.User;
+import restClient.NodeRestClientLocal;
 
 /**
  * Message-Driven Bean implementation class for: ChatAppJMS
@@ -28,7 +27,10 @@ public class ChatAppJMS implements MessageListener {
     
     @EJB
     private HostManagmentLocal hostBean;
-
+    
+    @EJB
+    private NodeRestClientLocal nodeRequester;
+    
     public ChatAppJMS() {
     }
 	
@@ -46,17 +48,22 @@ public class ChatAppJMS implements MessageListener {
             else if(message instanceof MapMessage){
                 if(message.propertyExists("registerAnswer")){
                     User user = (User) message.getObjectProperty("registerAnswer");
-                    if(user != null)
+                    if(user != null){
                         hostBean.getCurrentHost().getRegisteredUsers().add(user);
-                    
+                        hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
+                                                       .forEach(h -> nodeRequester.registerUser(h.getAdress(), user));
+                        //TODO: Respond through ws
+                    }
                 }                
                 else if(message.propertyExists("login")){
-                    // TODO: Send response through ws
                     User user = (User) message.getObjectProperty("login");
-                }else if(message.propertyExists("registered")){
-                    ArrayList<User> registered = (ArrayList<User>) message.getObjectProperty("registered");
-                }else if(message.propertyExists("active")){
-                    ArrayList<User> registered = (ArrayList<User>) message.getObjectProperty("active");                    
+                    if(user != null){
+                        hostBean.getCurrentHost().getActiveUsers().add(user);
+                        hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
+                                                       .forEach(h -> nodeRequester.addUser(h.getAdress(), user));
+                        
+                        //TODO: Respond through ws
+                    }
                 }
             }
         }

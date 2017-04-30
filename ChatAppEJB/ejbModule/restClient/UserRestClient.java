@@ -30,8 +30,8 @@ public class UserRestClient implements UserRestClientLocal{
     
     @Override
     public void registerUser(String masterAddress, String username, String password, String address, String alias){
-        ResteasyWebTarget target = createResteasyClient(masterAddress);
-        Form form = new Form();
+        ResteasyWebTarget target = createResteasyClient("http://"+masterAddress+"/UserApp/rest/user/register");
+        Form form                = new Form();
         form.param("username", username);
         form.param("password", password);
         form.param("address", address);
@@ -42,8 +42,13 @@ public class UserRestClient implements UserRestClientLocal{
     
 
     @Override
-    public void loginUser(User user) {
-        // TODO Auto-generated method stub
+    public void loginUser(String masterAddress, String username, String password) {
+        ResteasyWebTarget target = createResteasyClient("http://"+masterAddress+"/UserApp/rest/user/login");
+        Form form                = new Form();
+        form.param("username", username);
+        form.param("password", password);
+        Entity<Form> entity = Entity.form(form);
+        target.request(MediaType.APPLICATION_JSON).post(entity);
         
     }
 

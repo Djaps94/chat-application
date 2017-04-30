@@ -13,8 +13,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import beans.UserManagmentLocal;
+import beans.UserMessagesLocal;
 import exceptions.InvalidCredentialsException;
 import exceptions.UsernameExistsException;
+import jmsAPI.UserJMSMessage;
+import model.Host;
 import model.User;
 
 @Stateless
@@ -24,32 +27,30 @@ public class UserService{
 	@EJB
 	private UserManagmentLocal userBean;
 	
+	@EJB
+	private UserMessagesLocal userMessages;
+	
 	@POST
 	@Path("/register")
-	public User register(@FormParam("username") String username, @FormParam("password") String password,
-	                        @FormParam("address") String address, @FormParam("alias") String alias){
+	public void register(@FormParam("username") String username, @FormParam("password") String password,
+	                     @FormParam("address") String address, @FormParam("alias") String alias){
 		
-	    User registered = null;
-		try { registered = userBean.register(username, password, address, alias); } 
-		catch (UsernameExistsException e) { return registered; }
-		
-		return registered;
+		User u = new User(username, password, new Host(address, alias)); 
+        userMessages.registerMessage(new UserJMSMessage(u, UserJMSMessage.types.REGISTER));
 	}
 	
 	@POST
 	@Path("/login")
-	@Produces(MediaType.APPLICATION_JSON)
-	public User login(@FormParam("username") String username, @FormParam("password") String password){
+	public void login(@FormParam("username") String username, @FormParam("password") String password){
 	    
-	    try { return userBean.login(username, password); }
-	    catch (InvalidCredentialsException e) { return null; }	    
+	    userMessages.loginMessage(username, password);	    
 	}
 	
 	@POST
 	@Path("/logout")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Boolean logout(User user){
-	    return userBean.logout(user);
+	public void logout(User user){
+	    userMessages.logoutMessage(new UserJMSMessage(user, UserJMSMessage.types.LOGOUT));
 	}
 	
 	@GET
