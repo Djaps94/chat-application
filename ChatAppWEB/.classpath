@@ -13,5 +13,8 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="/ChatAppEJB"/>
+	<classpathentry kind="lib" path="/home/predrag/Downloads/jackson-core-2.8.8.jar" sourcepath="/home/predrag/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.8.8/jackson-core-2.8.8-sources.jar"/>
+	<classpathentry kind="lib" path="/home/predrag/Downloads/jackson-databind-2.8.8.jar" sourcepath="/home/predrag/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.8.8/jackson-databind-2.8.8-sources.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
