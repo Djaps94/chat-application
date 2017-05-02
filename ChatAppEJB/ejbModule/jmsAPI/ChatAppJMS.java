@@ -10,6 +10,7 @@ import javax.jms.MessageListener;
 import javax.jms.StreamMessage;
 
 import beans.HostManagmentLocal;
+import beans.ResponseSocketMessageLocal;
 import model.User;
 import restClient.NodeRestClientLocal;
 
@@ -30,6 +31,9 @@ public class ChatAppJMS implements MessageListener {
     
     @EJB
     private NodeRestClientLocal nodeRequester;
+    
+    @EJB
+    private ResponseSocketMessageLocal socketSender;
     
     public ChatAppJMS() {
     }

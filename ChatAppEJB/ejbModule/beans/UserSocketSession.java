@@ -1,7 +1,10 @@
 package beans;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
@@ -44,5 +47,20 @@ public class UserSocketSession implements UserSocketSessionLocal{
     @Lock(LockType.READ)
     public boolean isSessionActive(String username) {
         return sessionMap.containsKey(username);
+    }
+
+    @Override
+    @Lock(LockType.WRITE)
+    public void removeUserSession(Session value) {
+        if(!sessionMap.containsValue(value)){
+            String key = sessionMap.entrySet()
+                                  .stream()
+                                  .filter(entry -> Objects.equals(entry, value))
+                                  .findFirst()
+                                  .map(Map.Entry::getKey)
+                                  .get();
+            sessionMap.remove(key);
+        }
+        
     }
 }

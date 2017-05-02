@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import beans.ChatMessagesLocal;
 import beans.HostManagmentLocal;
+import beans.UserSocketSessionLocal;
 import model.User;
 import restClient.UserRestClientLocal;
 import util.NodesHandlerLocal;
@@ -33,8 +34,8 @@ import util.NodesHandlerLocal;
         })
 public class SocketEndPoint implements MessageListener{
 
-    
-    private List<Session> sessions = new ArrayList<Session>();
+    @EJB
+    private UserSocketSessionLocal userSession;
     
     @EJB
     private ChatMessagesLocal chatMessages;
@@ -52,13 +53,11 @@ public class SocketEndPoint implements MessageListener{
     
     @OnOpen
     public void onOpen(Session session){
-        if(!sessions.contains(session))
-            sessions.add(session);
     }
     
     @OnClose
     public void onClose(Session session){
-        sessions.remove(session);
+        userSession.removeUserSession(session);
     }
     
     @OnMessage
@@ -68,10 +67,10 @@ public class SocketEndPoint implements MessageListener{
             try {
                 SocketMessage message = mapper.readValue(socketMessage, SocketMessage.class);
                 switch(message.getMessageType()){
-                case    LOGIN: loginUser(message.getUsername(), message.getPassword()); break;
-                case   LOGOUT: logoutUser(message.getUsername(), message.getPassword());break;
+                case    LOGIN: loginUser(message.getUsername(), message.getPassword(), session); break;
+                case   LOGOUT: logoutUser(message.getUsername(), message.getPassword(), session);break;
                 case  MESSAGE: break;
-                case REGISTER: registerUser(message.getUsername(), message.getPassword()); break;
+                case REGISTER: registerUser(message.getUsername(), message.getPassword(), session); break;
                 default: break;
                 
                 }
@@ -82,7 +81,9 @@ public class SocketEndPoint implements MessageListener{
     }
     
     
-    private void registerUser(String username, String password){
+    private void registerUser(String username, String password, Session session){
+        storeSession(username, session);
+        
         if(nodeHandler.isMaster())
             chatMessages.registerMessage(username, password, hostBean.getOwnerAddress(), hostBean.getOwnerAlias());
         else
@@ -90,7 +91,9 @@ public class SocketEndPoint implements MessageListener{
             
     }
     
-    private void loginUser(String username, String password){
+    private void loginUser(String username, String password, Session session){
+        storeSession(username, session);
+        
         User u = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
                                                                         .findFirst()
                                                                         .get();
@@ -103,7 +106,8 @@ public class SocketEndPoint implements MessageListener{
             userRequester.loginUser(nodeHandler.getMasterAddress(), username, password);
     }
     
-    private void logoutUser(String username, String password){
+    private void logoutUser(String username, String password, Session session){
+        storeSession(username, session);
         
         User u = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
                                                                         .findFirst()
@@ -118,6 +122,12 @@ public class SocketEndPoint implements MessageListener{
             userRequester.logoutUser(nodeHandler.getMasterAddress(), u); 
     }
 
+    
+    
+    private void storeSession(String username, Session session){
+        if(!userSession.isSessionActive(username))
+            userSession.addUserSession(username, session);
+    }
     
     // Notify websocket end-point via JMS
     @Override
