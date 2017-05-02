@@ -4,13 +4,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
+import javax.ejb.MessageDriven;
+import javax.jms.Message;
+import javax.jms.MessageListener;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import javax.ws.rs.FormParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -21,7 +24,14 @@ import restClient.UserRestClientLocal;
 import util.NodesHandlerLocal;
 
 @ServerEndpoint("/webchat")
-public class SocketEndPoint {
+@MessageDriven(
+        activationConfig = { 
+                @ActivationConfigProperty(propertyName  = "destinationType", 
+                                          propertyValue = "javax.jms.Queue"),
+                @ActivationConfigProperty(propertyName  = "destination",
+                                          propertyValue = "java:/jms/queue/socketQueue")
+        })
+public class SocketEndPoint implements MessageListener{
 
     
     private List<Session> sessions = new ArrayList<Session>();
@@ -106,6 +116,14 @@ public class SocketEndPoint {
             chatMessages.logoutMessage(u);
         else
             userRequester.logoutUser(nodeHandler.getMasterAddress(), u); 
+    }
+
+    
+    // Notify websocket end-point via JMS
+    @Override
+    public void onMessage(Message message) {
+        // TODO Auto-generated method stub
+        
     }
         
     
