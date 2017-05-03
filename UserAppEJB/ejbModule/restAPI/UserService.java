@@ -14,8 +14,6 @@ import javax.ws.rs.core.MediaType;
 
 import beans.UserManagmentLocal;
 import beans.UserMessagesLocal;
-import exceptions.InvalidCredentialsException;
-import exceptions.UsernameExistsException;
 import jmsAPI.UserJMSMessage;
 import model.Host;
 import model.User;
@@ -36,7 +34,7 @@ public class UserService{
 	                     @FormParam("address") String address, @FormParam("alias") String alias){
 		
 		User u = new User(username, password, new Host(address, alias)); 
-        userMessages.registerMessage(new UserJMSMessage(u, UserJMSMessage.types.REGISTER));
+		userMessages.registerMessage(new UserJMSMessage(u, UserJMSMessage.types.REGISTER));
 	}
 	
 	@POST

@@ -8,10 +8,14 @@ import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
+
+import jmsAPI.SocketMessage;
+import model.User;
 
 @Stateless
 @Local(ResponseSocketMessageLocal.class)
@@ -21,7 +25,7 @@ public class ResponseSocketMessage implements ResponseSocketMessageLocal{
     private ConnectionFactory factory;
     
     @Resource(mappedName = "java:/jms/queue/socketQueue")
-    private Queue userQueue;
+    private Queue socketQueue;
     
     private Connection connection;
     private QueueSender sender;
@@ -33,7 +37,7 @@ public class ResponseSocketMessage implements ResponseSocketMessageLocal{
             this.connection = factory.createConnection();
             connection.start();
             this.session    = (QueueSession) connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            this.sender     = session.createSender(userQueue);
+            this.sender     = session.createSender(socketQueue);
         }
         catch(JMSException e) { return; }        
         
@@ -48,6 +52,35 @@ public class ResponseSocketMessage implements ResponseSocketMessageLocal{
         catch (JMSException e) { }
     } 
     
-    //TODO: Response methods 
+    
+    public void registerMessage(User user, SocketMessage.type messageType){
+        try{
+            SocketMessage message = new SocketMessage(user.getUsername(), user.getPassword(), messageType );
+            ObjectMessage msg     = session.createObjectMessage(message);
+            sender.send(msg);
+        }
+        catch(JMSException e) { }
+    }
+    
+    public void loginMessage(User user, SocketMessage.type messageType){
+        try{
+            SocketMessage message = new SocketMessage(user.getUsername(), user.getPassword(), messageType);
+            ObjectMessage msg     = session.createObjectMessage(message);
+            sender.send(msg);
+        }
+        catch(JMSException e) { }
+    }
+    
+    public void logoutMessage(User user, SocketMessage.type messageType){
+        try{
+            SocketMessage message = new SocketMessage(user.getUsername(), user.getPassword(), messageType);
+            ObjectMessage msg     = session.createObjectMessage(message);
+            sender.send(msg);
+        }
+        catch(JMSException e) { }
+    }
+    
+    
+    
 
 }

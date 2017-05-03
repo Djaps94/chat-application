@@ -7,7 +7,6 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.StreamMessage;
 
 import beans.HostManagmentLocal;
 import beans.ResponseSocketMessageLocal;
@@ -40,19 +39,16 @@ public class ChatAppJMS implements MessageListener {
 	
     public void onMessage(Message message) {
         try{
-            if(message instanceof StreamMessage){
-                if(message.propertyExists("registerError")){
-                    // TODO: Send response through ws
-                    Boolean registered = message.getBooleanProperty("registerError");
-                }
-            }
-            else if(message instanceof MapMessage){
+            if(message instanceof MapMessage){
                 if(message.propertyExists("registerAnswer")){
                     User user = (User) message.getObjectProperty("registerAnswer");
                     if(user != null){
                         hostBean.getCurrentHost().getRegisteredUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.registerUser(h.getAdress(), user));
+                        
+                        socketSender.registerMessage(user, SocketMessage.type.REGISTER);
+                        
                         //TODO: Respond through ws; Dont forget respond for null
                     }
                 }                
@@ -63,6 +59,7 @@ public class ChatAppJMS implements MessageListener {
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.addUser(h.getAdress(), user));
                         
+                        socketSender.loginMessage(user, SocketMessage.type.LOGIN);
                         //TODO: Respond through ws; Dont forget respond for null
                     }
                 }else if(message.propertyExists("logout")){
@@ -71,6 +68,8 @@ public class ChatAppJMS implements MessageListener {
                         hostBean.getCurrentHost().getActiveUsers().remove(logout);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.removeUser(h.getAdress(), logout));
+                        
+                        socketSender.logoutMessage(logout, SocketMessage.type.LOGOUT);
                         //TODO: Respond through ws
                     }
                 }

@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
 import beans.HostManagmentLocal;
+import beans.ResponseSocketMessageLocal;
+import jmsAPI.SocketMessage;
 import model.User;
 import util.NodesHandlerLocal;
 
@@ -21,38 +23,41 @@ public class UserChatService {
     @EJB
     private HostManagmentLocal hostBean;
     
+    @EJB
+    private ResponseSocketMessageLocal socketSender;
+    
     
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     public void registerUser(User user){
-        if(nodeHandler.isMaster())
+        if(!nodeHandler.isMaster()){
             hostBean.getCurrentHost().getRegisteredUsers().add(user);
-    
-        //TODO: Respond through ws
         
+            socketSender.registerMessage(user, SocketMessage.type.REGISTER);
+        }
     }
     
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     public void addUser(User user){
-        if(nodeHandler.isMaster())
+        if(!nodeHandler.isMaster()){
             hostBean.getCurrentHost().getActiveUsers().add(user);
-    
-        //TODO: Respond through ws
-        
+            
+            socketSender.loginMessage(user, SocketMessage.type.LOGIN);
+        }
     }
     
     @POST
     @Path("/logout")
     @Consumes(MediaType.APPLICATION_JSON)
     public void removeUser(User user){
-        if(nodeHandler.isMaster())
+        if(!nodeHandler.isMaster()){
             hostBean.getCurrentHost().getActiveUsers().remove(user);
-    
-        //TODO: Respond through ws
-        
+            
+            socketSender.logoutMessage(user, SocketMessage.type.LOGOUT);
+        }
     }
     
 }

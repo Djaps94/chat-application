@@ -1,8 +1,12 @@
-package sockets;
+package jmsAPI;
 
-public class SocketMessage {
-    
-    
+import java.io.Serializable;
+
+public class SocketMessage implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
+
     public enum type { LOGIN, 
                        REGISTER, 
                        LOGOUT, 
@@ -12,6 +16,7 @@ public class SocketMessage {
     private type messageType;
     private String username;
     private String password;
+    private String errorMessage;
     
     public SocketMessage() { }
     
@@ -44,5 +49,15 @@ public class SocketMessage {
 
     public void setMessageType(type messageType) {
         this.messageType = messageType;
+    }
+
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

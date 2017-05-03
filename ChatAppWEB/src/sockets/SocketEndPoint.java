@@ -1,14 +1,14 @@
 package sockets;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import beans.ChatMessagesLocal;
 import beans.HostManagmentLocal;
 import beans.UserSocketSessionLocal;
+import jmsAPI.SocketMessage;
 import model.User;
 import restClient.UserRestClientLocal;
 import util.NodesHandlerLocal;
@@ -129,11 +130,30 @@ public class SocketEndPoint implements MessageListener{
             userSession.addUserSession(username, session);
     }
     
-    // Notify websocket end-point via JMS
+    /**
+     *   Notify websocket end-point via JMS
+     */ 
+    
     @Override
     public void onMessage(Message message) {
-        // TODO Auto-generated method stub
+        if(message instanceof ObjectMessage){
+            try {
+                SocketMessage msg   = (SocketMessage) ((ObjectMessage) message).getObject();
+                Session session     = findSession(msg.getUsername());
+                if(session != null){
+                    ObjectMapper mapper = new ObjectMapper();
+                    String output       = mapper.writeValueAsString(msg);
+                    session.getBasicRemote().sendText(output);
+                }
+                
+            }
+            catch (JMSException | IOException e) { e.printStackTrace(); }
+        }
         
+    }
+    
+    private Session findSession(String username){
+        return userSession.getSession(username);
     }
         
     

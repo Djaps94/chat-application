@@ -10,5 +10,6 @@ public interface UserSocketSessionLocal {
     public void removeUserSession(String username);
     public void removeUserSession(Session value);
     public boolean isSessionActive(String username);
+    public Session getSession(String key);
     
 }
