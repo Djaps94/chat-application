@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.jms.MapMessage;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
@@ -67,12 +67,13 @@ public class UserMessages implements UserMessagesLocal{
     public void registerMessage(UserJMSMessage message) {
         try {
             User user      = userBean.register(message.getUsername(), message.getPassword(), message.getAddress(), message.getAlias());
-            MapMessage msg = session.createMapMessage();
-            msg.setObjectProperty("registerAnswer", user);
+            ObjectMessage msg = session.createObjectMessage(user);
+            msg.setObjectProperty("registerAnswer", "");
             sender.send(msg);
         }
         catch (UsernameExistsException | JMSException e) {
             try {
+                e.printStackTrace();
                 StreamMessage msg = session.createStreamMessage();
                 msg.setBooleanProperty("registerError", false);
                 sender.send(msg);
@@ -85,8 +86,8 @@ public class UserMessages implements UserMessagesLocal{
     public void loginMessage(String username, String password) {
         try{
             User user         = userBean.login(username, password);
-            MapMessage msg    = session.createMapMessage();
-            msg.setObject("login", user);
+            ObjectMessage msg    = session.createObjectMessage(user);
+            msg.setObjectProperty("login", "");
             sender.send(msg);
         }
         catch (InvalidCredentialsException | JMSException e) { 
@@ -103,8 +104,8 @@ public class UserMessages implements UserMessagesLocal{
     public void logoutMessage(UserJMSMessage message) {
         try{
             User logout  = userBean.logout(message.getUser());
-            MapMessage m = session.createMapMessage();
-            m.setObjectProperty("logout", logout);
+            ObjectMessage m = session.createObjectMessage(logout);
+            m.setObjectProperty("logout", "");
             sender.send(m);
         }
         catch(JMSException e) { }
@@ -114,8 +115,8 @@ public class UserMessages implements UserMessagesLocal{
     public void getRegisteredMessage() {
         try{
             ArrayList<User> users = (ArrayList<User>) userBean.getAllRegisteredUsers();
-            MapMessage msg        = session.createMapMessage();
-            msg.setObjectProperty("registered", users);
+            ObjectMessage msg        = session.createObjectMessage(users);
+            msg.setObjectProperty("registered", "");
             sender.send(msg);
         }
         catch(JMSException e) { }
@@ -125,8 +126,8 @@ public class UserMessages implements UserMessagesLocal{
     public void getActiveMessage() {
         try{
             ArrayList<User> users = (ArrayList<User>) userBean.getAllActiveUsers();
-            MapMessage msg        = session.createMapMessage();
-            msg.setObjectProperty("active", users);
+            ObjectMessage msg        = session.createObjectMessage(users);
+            msg.setObjectProperty("active", "");
             sender.send(msg);   
         }catch(JMSException e) { }
     }

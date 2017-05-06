@@ -4,9 +4,9 @@ import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 
 import beans.HostManagmentLocal;
 import beans.ResponseSocketMessageLocal;
@@ -39,9 +39,9 @@ public class ChatAppJMS implements MessageListener {
 	
     public void onMessage(Message message) {
         try{
-            if(message instanceof MapMessage){
+            if(message instanceof ObjectMessage){
                 if(message.propertyExists("registerAnswer")){
-                    User user = (User) message.getObjectProperty("registerAnswer");
+                    User user = (User) ((ObjectMessage) message).getObject();
                     if(user != null){
                         hostBean.getCurrentHost().getRegisteredUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
@@ -53,7 +53,7 @@ public class ChatAppJMS implements MessageListener {
                     }
                 }                
                 else if(message.propertyExists("login")){
-                    User user = (User) message.getObjectProperty("login");
+                    User user = (User) ((ObjectMessage) message).getObject();
                     if(user != null){
                         hostBean.getCurrentHost().getActiveUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
@@ -63,7 +63,7 @@ public class ChatAppJMS implements MessageListener {
                         //TODO: Respond through ws; Dont forget respond for null
                     }
                 }else if(message.propertyExists("logout")){
-                    User logout = (User) message.getObjectProperty("logout");
+                    User logout = (User) ((ObjectMessage) message).getObject();
                     if(logout != null){
                         hostBean.getCurrentHost().getActiveUsers().remove(logout);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
@@ -75,7 +75,7 @@ public class ChatAppJMS implements MessageListener {
                 }
             }
         }
-        catch(JMSException e) { }
+        catch(JMSException e) {e.printStackTrace(); }
     }
 
 }

@@ -1,11 +1,14 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Host {
+public class Host implements Serializable{
 
-	private String adress;
+    private static final long serialVersionUID = 1L;
+	
+    private String adress;
 	private String alias;
 	private List<User> activeUsers;
 	private List<User> registeredUsers;

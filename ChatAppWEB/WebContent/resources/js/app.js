@@ -1,1 +1,1 @@
-var app = angular.module('myApplication', ['routes']);
+var app = angular.module('myApplication', ['routes', 'registerContr']);
