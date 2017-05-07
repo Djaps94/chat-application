@@ -113,13 +113,13 @@ public class UserManagment implements UserManagmentLocal{
 		if(!checkParams(logout.getUsername(), logout.getPassword()))
 			return null;
 		
-		if(activeUsers.stream().anyMatch(e -> e.equals(logout))){
+		if(activeUsers.stream().anyMatch(e -> e.getUsername().equals(logout.getUsername()))){
 			activeUsers.remove(logout);
-			
+			logout.setLogout(true);
 			return logout;
 		}
 		
-		return null;
+		return logout;
 	}
 
 	@Lock(LockType.READ)

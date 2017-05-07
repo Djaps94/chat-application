@@ -67,14 +67,15 @@ public class ChatAppJMS implements MessageListener {
                         socketSender.loginMessage(user, SocketMessage.type.NOT_REGISTERED);
                 }else if(message.propertyExists("logout")){
                     User logout = (User) ((ObjectMessage) message).getObject();
-                    if(logout != null){
+                    if(logout.getLogout()){
                         hostBean.getCurrentHost().getActiveUsers().remove(logout);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.removeUser(h.getAdress(), logout));
                         
                         socketSender.logoutMessage(logout, SocketMessage.type.LOGOUT);
-                        //TODO: Respond through ws
-                    }
+                      
+                    }else
+                        socketSender.logoutMessage(logout, SocketMessage.type.NOT_LOGOUT);
                 }
             }
         }

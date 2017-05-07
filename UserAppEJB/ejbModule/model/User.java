@@ -12,6 +12,7 @@ public class User implements Serializable{
 	private Boolean registered    = false;
 	private Boolean logged        = false;
 	private Boolean notregistered = false;
+	private Boolean logout        = false;
 	
 	public User() {}
 	
@@ -67,5 +68,13 @@ public class User implements Serializable{
 
     public void setNotregistered(Boolean notregistered) {
         this.notregistered = notregistered;
+    }
+
+    public Boolean getLogout() {
+        return logout;
+    }
+
+    public void setLogout(Boolean logout) {
+        this.logout = logout;
     }
 }

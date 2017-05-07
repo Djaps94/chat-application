@@ -14,29 +14,32 @@
 <script src="resources/js/routes.js"></script>
 <script src="resources/js/controller/registerController.js"></script>
 <script src="resources/js/controller/loginController.js"></script>
+<script src="resources/js/controller/logoutController.js"></script>
 </head>
 
 <body ng-app="myApplication">
-<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="#">ChatApp</a>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Chat<span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Sign in</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Logout</a>
-      </li>
-    </ul>
-  </div>
-</nav>
+<div ng-controller="logoutController">
+	<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+	  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	  <a class="navbar-brand" href="/">ChatApp</a>
+	
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav mr-auto">
+	      <li class="nav-item active">
+	        <a class="nav-link" href="#!/chat">Chat<span class="sr-only">(current)</span></a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="#!/login">Sign in</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="#" ng-click=logout() ng-if="logButton">Logout</a>
+	      </li>
+	    </ul>
+	  </div>
+	</nav>
+</div>
 	<div ng-view></div>
 </body>
 

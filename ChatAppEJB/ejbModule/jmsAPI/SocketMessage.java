@@ -13,7 +13,8 @@ public class SocketMessage implements Serializable{
                        MESSAGE,
                        USERNAME_EXISTS,
                        ALREADY_LOGED,
-                       NOT_REGISTERED
+                       NOT_REGISTERED,
+                       NOT_LOGOUT
                       };
     
     private type messageType;

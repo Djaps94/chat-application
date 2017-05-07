@@ -1,6 +1,7 @@
 package sockets;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
@@ -109,11 +110,13 @@ public class SocketEndPoint implements MessageListener{
     private void logoutUser(String username, String password, Session session){
         storeSession(username+LOGOUT, session);
         
-        User u = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
-                                                                        .findFirst()
-                                                                        .get();
-        if(u == null){
-            
+        Optional<User> opt = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
+                                                                        .findFirst();
+        User u = null;
+        if(opt.isPresent()){
+            u = opt.get();
+        }else{
+            u = new User(username, password);
         }
         
         if(nodeHandler.isMaster())
@@ -147,6 +150,7 @@ public class SocketEndPoint implements MessageListener{
                 case  NOT_REGISTERED: session = findSession(msg.getUsername()+LOGIN);    break;
                 case        REGISTER: session = findSession(msg.getUsername()+REGISTER); break;
                 case USERNAME_EXISTS: session = findSession(msg.getUsername()+REGISTER); break;
+                case      NOT_LOGOUT: session = findSession(msg.getUsername()+LOGOUT); break;
                 }
                 if(session != null){
                     ObjectMapper mapper = new ObjectMapper();

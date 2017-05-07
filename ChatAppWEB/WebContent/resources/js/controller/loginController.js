@@ -13,14 +13,14 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 	var wslocation = "ws://"+url.hostname+":"+url.port+"/ChatApp/webchat";
 	
 	try{
-		var socket = new WebSocket(wslocation);
+		socket = new WebSocket(wslocation);
 		
 		socket.onopen = function(){
 			console.log("Socket opened!");
 		}
 		
 		socket.onclose = function(){
-			socket = null;
+			socket.close();
 			console.log("Socket closed");
 		}
 		
@@ -31,7 +31,14 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 									break;
 			case  'ALREADY_LOGED' : $location.path("/chat");
 								    break;
-			case 'NOT_REGISTERED' : warning(); 
+			case 'NOT_REGISTERED' : {		
+									$scope.userinput = "border-color: red";
+									$scope.passinput = "border-color: red";
+									$scope.show      = true;
+									$scope.username  = "";
+									$scope.password  = "";
+									$scope.errorMessage = "Your are not registered."	
+									}; 
 									break;
 			}
 		}

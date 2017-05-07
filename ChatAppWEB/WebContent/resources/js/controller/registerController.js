@@ -15,7 +15,7 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 		}
 		
 		socket.onclose = function(){
-			socket = null;
+			socket.close();
 			console.log("socket closed!");
 		}
 		
@@ -27,7 +27,13 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 											$location.path("/login");
 										}); }, 2000);
 									break;
-			case 'USERNAME_EXISTS': notif(); 
+			case 'USERNAME_EXISTS': {
+									$scope.userinput = "border-color: red";
+									$scope.passinput = "border-color: red";
+									$scope.show      = true;
+									$scope.username  = "";
+									$scope.password  = "";
+									}; 
 									break;
 			}
 		}
