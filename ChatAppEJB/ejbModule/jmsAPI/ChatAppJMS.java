@@ -42,26 +42,27 @@ public class ChatAppJMS implements MessageListener {
             if(message instanceof ObjectMessage){
                 if(message.propertyExists("registerAnswer")){
                     User user = (User) ((ObjectMessage) message).getObject();
-                    if(user != null){
+                    if(!user.getRegistered()){
                         hostBean.getCurrentHost().getRegisteredUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.registerUser(h.getAdress(), user));
                         
                         socketSender.registerMessage(user, SocketMessage.type.REGISTER);
                         
-                        //TODO: Respond through ws; Dont forget respond for null
-                    }
+                    }else
+                        socketSender.registerMessage(user, SocketMessage.type.USERNAME_EXISTS);
                 }                
                 else if(message.propertyExists("login")){
                     User user = (User) ((ObjectMessage) message).getObject();
-                    if(user != null){
+                    if(!user.getLogged()){
                         hostBean.getCurrentHost().getActiveUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.addUser(h.getAdress(), user));
                         
                         socketSender.loginMessage(user, SocketMessage.type.LOGIN);
                         //TODO: Respond through ws; Dont forget respond for null
-                    }
+                    }else
+                        socketSender.loginMessage(user, SocketMessage.type.ALREADY_LOGED);
                 }else if(message.propertyExists("logout")){
                     User logout = (User) ((ObjectMessage) message).getObject();
                     if(logout != null){

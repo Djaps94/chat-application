@@ -16,7 +16,6 @@ import javax.jms.Queue;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
-import javax.jms.StreamMessage;
 import javax.jms.TextMessage;
 
 import exceptions.InvalidCredentialsException;
@@ -66,26 +65,18 @@ public class UserMessages implements UserMessagesLocal{
     @Override
     public void registerMessage(UserJMSMessage message) {
         try {
-            User user      = userBean.register(message.getUsername(), message.getPassword(), message.getAddress(), message.getAlias());
+            User user         = userBean.register(message.getUsername(), message.getPassword(), message.getAddress(), message.getAlias());
             ObjectMessage msg = session.createObjectMessage(user);
             msg.setObjectProperty("registerAnswer", "");
             sender.send(msg);
         }
-        catch (UsernameExistsException | JMSException e) {
-            try {
-                e.printStackTrace();
-                StreamMessage msg = session.createStreamMessage();
-                msg.setBooleanProperty("registerError", false);
-                sender.send(msg);
-            }catch(Exception ex) { }
-        }
-        
+        catch (UsernameExistsException | JMSException e) { }
     }
 
     @Override
     public void loginMessage(String username, String password) {
         try{
-            User user         = userBean.login(username, password);
+            User user            = userBean.login(username, password);
             ObjectMessage msg    = session.createObjectMessage(user);
             msg.setObjectProperty("login", "");
             sender.send(msg);
@@ -103,7 +94,7 @@ public class UserMessages implements UserMessagesLocal{
     @Override
     public void logoutMessage(UserJMSMessage message) {
         try{
-            User logout  = userBean.logout(message.getUser());
+            User logout     = userBean.logout(message.getUser());
             ObjectMessage m = session.createObjectMessage(logout);
             m.setObjectProperty("logout", "");
             sender.send(m);
@@ -114,7 +105,7 @@ public class UserMessages implements UserMessagesLocal{
     @Override
     public void getRegisteredMessage() {
         try{
-            ArrayList<User> users = (ArrayList<User>) userBean.getAllRegisteredUsers();
+            ArrayList<User> users    = (ArrayList<User>) userBean.getAllRegisteredUsers();
             ObjectMessage msg        = session.createObjectMessage(users);
             msg.setObjectProperty("registered", "");
             sender.send(msg);
@@ -125,7 +116,7 @@ public class UserMessages implements UserMessagesLocal{
     @Override
     public void getActiveMessage() {
         try{
-            ArrayList<User> users = (ArrayList<User>) userBean.getAllActiveUsers();
+            ArrayList<User> users    = (ArrayList<User>) userBean.getAllActiveUsers();
             ObjectMessage msg        = session.createObjectMessage(users);
             msg.setObjectProperty("active", "");
             sender.send(msg);   

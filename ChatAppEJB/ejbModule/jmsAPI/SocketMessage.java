@@ -10,7 +10,9 @@ public class SocketMessage implements Serializable{
     public enum type { LOGIN, 
                        REGISTER, 
                        LOGOUT, 
-                       MESSAGE 
+                       MESSAGE,
+                       USERNAME_EXISTS,
+                       ALREADY_LOGED
                       };
     
     private type messageType;

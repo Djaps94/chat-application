@@ -9,6 +9,9 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		.when('/register',{
 			templateUrl: 'resources/html/register.html'
 		})
+		.when('/login', {
+			templateUrl: 'resources/html/login.html'
+		})
 	
 	if(window.history && window.history.pushState){
 		$locationProvider.html5Mode({

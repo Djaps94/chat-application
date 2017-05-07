@@ -59,15 +59,7 @@ public class UserSocketSession implements UserSocketSessionLocal{
     @Override
     @Lock(LockType.WRITE)
     public void removeUserSession(Session value) {
-        if(!sessionMap.containsValue(value)){
-            String key = sessionMap.entrySet()
-                                  .stream()
-                                  .filter(entry -> Objects.equals(entry, value))
-                                  .findFirst()
-                                  .map(Map.Entry::getKey)
-                                  .get();
-            sessionMap.remove(key);
-        }
+        sessionMap.values().remove(value);
         
     }
 }

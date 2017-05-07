@@ -1,9 +1,11 @@
 var app = angular.module('registerContr', []);
 
-app.controller('registerController', ['$scope', function($scope){
+app.controller('registerController', ['$scope', '$rootScope', '$location', '$timeout', function($scope, $rootScope, $location, $timeout){
 	var url = window.location;
 	
 	var wsaddress = "ws://"+url.hostname+":"+url.port+"/ChatApp/webchat";
+	
+	$scope.show = false;
 	
 	try{
 		socket = new WebSocket(wsaddress);
@@ -18,7 +20,15 @@ app.controller('registerController', ['$scope', function($scope){
 		}
 		
 		socket.onmessage = function(message){
-			alert(message);
+			var socketMessage = JSON.parse(message.data);
+			switch(socketMessage.messageType){
+			case 	   'REGISTER' : $timeout(function(){
+										$rootScope.$apply(function(){
+											$location.path("/login");
+										}); }, 2000);
+			break;
+			case 'USERNAME_EXISTS': warning(); break;
+			}
 		}
 		
 	}catch(exception){
@@ -41,5 +51,11 @@ app.controller('registerController', ['$scope', function($scope){
 			alert("That's bad habit!");
 			return;
 		}
+	}
+	
+	var warning = function(){
+		$scope.userinput = "border-color: red";
+		$scope.passinput = "border-color: red";
+		$scope.show      = true;
 	}
 }]);

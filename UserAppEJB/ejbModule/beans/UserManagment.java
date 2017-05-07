@@ -53,8 +53,10 @@ public class UserManagment implements UserManagmentLocal{
 		
 		User user = new User(username, password, new Host(address, alias));
 		
-		if(registeredUsers.contains(user))
-			return null;
+		if(registeredUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
+			user.setRegistered(true);
+		    return user;
+		}
 		
 		registeredUsers.add(user);
 		try {
@@ -72,8 +74,13 @@ public class UserManagment implements UserManagmentLocal{
 		if(!checkParams(username, password))
 			return null;
 		
-		if(activeUsers.stream().anyMatch(e -> e.getUsername().equals(username)))
-			return null;
+		if(activeUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
+		    User u = activeUsers.stream().filter(e -> e.getUsername().equals(username))
+                                         .findFirst()
+                                         .get();
+		    u.setLogged(true);
+		    return u;
+		}
 		
 		if(registeredUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
 			User u = registeredUsers.stream().filter(e -> e.getUsername().equals(username))

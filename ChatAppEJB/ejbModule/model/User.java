@@ -9,6 +9,8 @@ public class User implements Serializable{
     private String username;
 	private String password;
 	private Host host;
+	private Boolean registered = false;
+	private Boolean logged     = false;
 	
 	public User() {}
 	
@@ -41,4 +43,20 @@ public class User implements Serializable{
 	public void setHost(Host host) {
 		this.host = host;
 	}
+
+    public Boolean getRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(Boolean registered) {
+        this.registered = registered;
+    }
+
+    public Boolean getLogged() {
+        return logged;
+    }
+
+    public void setLogged(Boolean logged) {
+        this.logged = logged;
+    }
 }

@@ -1,1 +1,3 @@
-var app = angular.module('myApplication', ['routes', 'registerContr']);
+var app = angular.module('myApplication', ['routes', 
+										   'registerContr',
+										   'loginContr']);
