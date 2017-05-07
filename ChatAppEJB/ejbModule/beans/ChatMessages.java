@@ -63,9 +63,12 @@ public class ChatMessages implements ChatMessagesLocal{
     }
 
     @Override
-    public void loginMessage(User u) {
+    public void loginMessage(String username, String password) {
         try{
-            UserJMSMessage message = new UserJMSMessage(u, UserJMSMessage.types.LOGIN);
+            UserJMSMessage message = new UserJMSMessage();
+            message.setMessageType(UserJMSMessage.types.LOGIN);
+            message.setUsername(username);
+            message.setPassword(password);
             ObjectMessage msg      = session.createObjectMessage(message);
             sender.send(msg);
         }

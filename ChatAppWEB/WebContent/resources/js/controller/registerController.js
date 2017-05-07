@@ -26,8 +26,9 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 										$rootScope.$apply(function(){
 											$location.path("/login");
 										}); }, 2000);
-			break;
-			case 'USERNAME_EXISTS': warning(); break;
+									break;
+			case 'USERNAME_EXISTS': notif(); 
+									break;
 			}
 		}
 		
@@ -48,14 +49,15 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 	
 	var validation = function(username, password){
 		if(username == "" || username == undefined || password == "" || password == undefined || (username == "" && password == "")){
-			alert("That's bad habit!");
 			return;
 		}
 	}
 	
-	var warning = function(){
+	var notif = function(){
 		$scope.userinput = "border-color: red";
 		$scope.passinput = "border-color: red";
 		$scope.show      = true;
+		$scope.username  = "";
+		$scope.password  = "";
 	}
 }]);

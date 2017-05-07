@@ -33,15 +33,14 @@ import model.User;
 public class UserManagment implements UserManagmentLocal{
 	
 	private static final String REGISTER_PATH = "registeredUsers.txt";
-	private static final String ACTIVE_PATH   = "activeUsers.txt";
 	
 	private List<User> activeUsers;
 	private List<User> registeredUsers;
 	
 	@PostConstruct
 	private void initialise(){
-		activeUsers     = loadUsers(ACTIVE_PATH);
 		registeredUsers = loadUsers(REGISTER_PATH);
+		activeUsers     = new ArrayList<>();
 		
 	}
 
@@ -74,26 +73,38 @@ public class UserManagment implements UserManagmentLocal{
 		if(!checkParams(username, password))
 			return null;
 		
-		if(activeUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
-		    User u = activeUsers.stream().filter(e -> e.getUsername().equals(username))
-                                         .findFirst()
-                                         .get();
-		    u.setLogged(true);
-		    return u;
+		if(!activeUsers.isEmpty()){
+    		if(activeUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
+    		    User u = activeUsers.stream().filter(e -> e.getUsername().equals(username))
+                                             .findFirst()
+                                             .get();
+    		    u.setLogged(true);
+    		    return u;
+		    }
 		}
 		
-		if(registeredUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
-			User u = registeredUsers.stream().filter(e -> e.getUsername().equals(username))
-			                                 .findFirst()
-			                                 .get();
-			activeUsers.add(u);
-			try { saveUser(activeUsers, ACTIVE_PATH); } 
-			catch (URISyntaxException | IOException e1) { }
-			return u;
+		if(!registeredUsers.isEmpty()){
+    		if(!registeredUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
+    		    User u = new User();
+    		    u.setUsername(username);
+    		    u.setPassword(password);
+    		    u.setNotregistered(true);
+    		    return u;
+    		}
 		}
-							
 		
-		return null;
+		if(!registeredUsers.isEmpty()){
+    		if(registeredUsers.stream().anyMatch(e -> e.getUsername().equals(username))){
+    			User u = registeredUsers.stream().filter(e -> e.getUsername().equals(username))
+    			                                 .findFirst()
+    			                                 .get();
+    			activeUsers.add(u);
+    			return u;
+    		}					
+		}
+		User u = new User(username, password);
+		u.setNotregistered(true);
+		return u;
 	}
 
 	@Lock(LockType.WRITE)
@@ -105,9 +116,6 @@ public class UserManagment implements UserManagmentLocal{
 		if(activeUsers.stream().anyMatch(e -> e.equals(logout))){
 			activeUsers.remove(logout);
 			
-			try { saveUser(activeUsers, ACTIVE_PATH); }
-            catch (URISyntaxException | IOException e1) { e1.printStackTrace(); }
-         
 			return logout;
 		}
 		

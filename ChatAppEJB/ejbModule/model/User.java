@@ -9,8 +9,9 @@ public class User implements Serializable{
     private String username;
 	private String password;
 	private Host host;
-	private Boolean registered = false;
-	private Boolean logged     = false;
+	private Boolean registered    = false;
+	private Boolean logged        = false;
+	private Boolean notregistered = false;
 	
 	public User() {}
 	
@@ -58,5 +59,13 @@ public class User implements Serializable{
 
     public void setLogged(Boolean logged) {
         this.logged = logged;
+    }
+
+    public Boolean getNotregistered() {
+        return notregistered;
+    }
+
+    public void setNotregistered(Boolean notregistered) {
+        this.notregistered = notregistered;
     }
 }

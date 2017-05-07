@@ -76,6 +76,10 @@ public class UserJMSMessage implements Serializable{
         return messageType;
     }
     
+    public void setMessageType(types messageType) {
+        this.messageType = messageType;
+    }
+
     public User getUser(){
         return u;
     }

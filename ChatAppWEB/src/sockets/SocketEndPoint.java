@@ -34,6 +34,10 @@ import util.NodesHandlerLocal;
                                           propertyValue = "java:/jms/queue/socketQueue")
         })
 public class SocketEndPoint implements MessageListener{
+    
+    private static final String REGISTER = "register";
+    private static final String LOGIN    = "login";
+    private static final String LOGOUT   = "logout";
 
     @EJB
     private UserSocketSessionLocal userSession;
@@ -54,6 +58,7 @@ public class SocketEndPoint implements MessageListener{
     
     @OnOpen
     public void onOpen(Session session){
+       
     }
     
     @OnClose
@@ -83,7 +88,7 @@ public class SocketEndPoint implements MessageListener{
     
     
     private void registerUser(String username, String password, Session session){
-        storeSession(username, session);
+        storeSession(username+REGISTER, session);
         
         if(nodeHandler.isMaster())
             chatMessages.registerMessage(username, password, hostBean.getOwnerAddress(), hostBean.getOwnerAlias());
@@ -93,22 +98,16 @@ public class SocketEndPoint implements MessageListener{
     }
     
     private void loginUser(String username, String password, Session session){
-        storeSession(username, session);
-        
-        User u = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
-                                                                        .findFirst()
-                                                                        .get();
-        if(u == null)
-            //TODO: WS response 
-        
+        storeSession(username+LOGIN, session);
+
         if(nodeHandler.isMaster())
-            chatMessages.loginMessage(u);
+            chatMessages.loginMessage(username, password);
         else
             userRequester.loginUser(nodeHandler.getMasterAddress(), username, password);
     }
     
     private void logoutUser(String username, String password, Session session){
-        storeSession(username, session);
+        storeSession(username+LOGOUT, session);
         
         User u = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
                                                                         .findFirst()
@@ -125,9 +124,9 @@ public class SocketEndPoint implements MessageListener{
 
     
     
-    private void storeSession(String username, Session session){
-        if(!userSession.isSessionActive(username))
-            userSession.addUserSession(username, session);
+    private void storeSession(String id, Session session){
+        if(!userSession.isSessionActive(id))
+            userSession.addUserSession(id, session);
     }
     
     /**
@@ -138,8 +137,17 @@ public class SocketEndPoint implements MessageListener{
     public void onMessage(Message message) {
         if(message instanceof ObjectMessage){
             try {
-                SocketMessage msg   = (SocketMessage) ((ObjectMessage) message).getObject();
-                Session session     = findSession(msg.getUsername());
+                SocketMessage msg = (SocketMessage) ((ObjectMessage) message).getObject();
+                Session session   = null;
+                switch(msg.getMessageType()){
+                case   ALREADY_LOGED: session = findSession(msg.getUsername()+LOGIN);    break;
+                case           LOGIN: session = findSession(msg.getUsername()+LOGIN);    break;
+                case          LOGOUT: session = findSession(msg.getUsername()+LOGOUT);   break;
+                case         MESSAGE: session = findSession(msg.getUsername());          break;
+                case  NOT_REGISTERED: session = findSession(msg.getUsername()+LOGIN);    break;
+                case        REGISTER: session = findSession(msg.getUsername()+REGISTER); break;
+                case USERNAME_EXISTS: session = findSession(msg.getUsername()+REGISTER); break;
+                }
                 if(session != null){
                     ObjectMapper mapper = new ObjectMapper();
                     String output       = mapper.writeValueAsString(msg);

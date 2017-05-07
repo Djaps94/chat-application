@@ -12,6 +12,9 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		.when('/login', {
 			templateUrl: 'resources/html/login.html'
 		})
+		.when('/chat', {
+			templateUrl: 'resources/html/chat.html'
+		})
 	
 	if(window.history && window.history.pushState){
 		$locationProvider.html5Mode({

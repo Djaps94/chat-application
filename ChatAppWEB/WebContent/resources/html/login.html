@@ -1,13 +1,16 @@
 <div style="margin-left: 40%;margin-top: 10%;" ng-controller="loginController">
+	<div ng-show="show" class="col-sm-6" style="margin-bottom: 9%;text-align: left; color: red;">
+		<span>{{ errorMessage }}</span>
+	</div>
 	<form>
 	  <div class="form-group">
 	    <label for="username">Username</label>
-	    <input type="text" class="form-control col-sm-4" id="username" ng-model="username">
+	    <input style="{{ userinput }}" type="text" class="form-control col-sm-4" id="username" ng-model="username">
 	  </div>
 	  <div class="form-group">
 	    <label for="password">Password</label>
-	    <input type="password" class="form-control col-sm-4" id="password" ng-model="password">
+	    <input style="{{ passinput }}" type="password" class="form-control col-sm-4" id="password" ng-model="password">
 	  </div>
-	  <button class="btn btn-sm btn-info" ng-click="login()">Register</button>
+	  <button class="btn btn-sm btn-info" ng-click="login()">Sign in</button>
 	</form>
 </div>
