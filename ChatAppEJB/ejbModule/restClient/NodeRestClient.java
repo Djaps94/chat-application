@@ -14,6 +14,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
+import jmsAPI.UserJMSMessage;
 import model.Host;
 import model.User;
 
@@ -41,19 +42,19 @@ public class NodeRestClient implements NodeRestClientLocal{
         target.request().post(entity);
     }
     
-    public void registerUser(String destination, User user){
+    public void registerUser(String destination, UserJMSMessage message){
         ResteasyWebTarget target = createResteasyClient("http://"+destination+"/ChatApp/rest/chat/register");
-        target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
+        target.request().post(Entity.entity(message, MediaType.APPLICATION_JSON));
     }
     
-    public void addUser(String destination, User user){
+    public void addUser(String destination, UserJMSMessage message){
         ResteasyWebTarget target = createResteasyClient("http://"+destination+"/ChatApp/rest/chat/login");
-        target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
+        target.request().post(Entity.entity(message, MediaType.APPLICATION_JSON));
     }
     
-    public void removeUser(String destination, User user){
+    public void removeUser(String destination, UserJMSMessage message){
         ResteasyWebTarget target = createResteasyClient("http://"+destination+"/ChatApp/rest/chat/logout");
-        target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
+        target.request().post(Entity.entity(message, MediaType.APPLICATION_JSON));
     }
     
     private ResteasyWebTarget createResteasyClient(String destination){

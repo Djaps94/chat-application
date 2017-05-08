@@ -81,15 +81,19 @@ public class UserJMSMessage implements Serializable{
         this.messageType = messageType;
     }
 
-    public User getUser(){
-        return u;
-    }
-
     public String getSessionId() {
         return sessionId;
     }
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public User getU() {
+        return u;
+    }
+
+    public void setU(User u) {
+        this.u = u;
     }
 }

@@ -6,7 +6,12 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 		$location.path("/chat");
 	}
 	
-	$scope.show = false;
+	$scope.logInfo = {
+			show : false,
+			username : "",
+			password : ""
+	};
+	
 	
 	var url = window.location;
 	
@@ -31,14 +36,7 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 									break;
 			case  'ALREADY_LOGED' : $location.path("/chat");
 								    break;
-			case 'NOT_REGISTERED' : {		
-									$scope.userinput = "border-color: red";
-									$scope.passinput = "border-color: red";
-									$scope.show      = true;
-									$scope.username  = "";
-									$scope.password  = "";
-									$scope.errorMessage = "Your are not registered."	
-									}; 
+			case 'NOT_REGISTERED' : {}; 
 									break;
 			}
 		}
@@ -49,10 +47,11 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 	}
 	
 	$scope.login = function(){
-		validation($scope.username, $scope.password);
+		if(!validation($scope.logInfo.username, $scope.logInfo.password))
+			return;
 		var socketMessage = {
-				username : $scope.username,
-				password : $scope.password,
+				username : $scope.logInfo.username,
+				password : $scope.logInfo.password,
 				messageType : 'LOGIN'
 		};
 		socket.send(JSON.stringify(socketMessage));
@@ -63,9 +62,10 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 	var validation = function (username, password){
 		if(username == "" || username == undefined || password == "" || password == undefined || (username == "" && password == "")){
 			$scope.errorMessage = "Username and/or password can't be blank";
-			$scope.show = true;
-			return;
+			$scope.logInfo.show = true;
+			return false;
 		}
+		return true;
 	}
 	
 	var getToChat = function(username, password){
@@ -80,11 +80,9 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 	}
 	
 	var warning = function(){
-		$scope.userinput = "border-color: red";
-		$scope.passinput = "border-color: red";
-		$scope.show      = true;
-		$scope.username  = "";
-		$scope.password  = "";
+		$scope.logInfo.show      = true;
+		$scope.logInfo.username  = "";
+		$scope.logInfo.password  = "";
 		$scope.errorMessage = "Your are not registered."
 	}
 	

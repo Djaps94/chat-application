@@ -40,6 +40,7 @@ public class NodesHandler implements NodesHandlerLocal{
     
     private String masterIpAdress;
     private String slaveAddress;
+    private Boolean master = true;
     
     private Logger logger = Logger.getLogger(NodesHandler.class);
 
@@ -63,6 +64,7 @@ public class NodesHandler implements NodesHandlerLocal{
             return;
         }
         
+        master = false;
         if(System.getProperty(OFFSET) == null || System.getProperty(OFFSET) == ""){
             String ip          = System.getProperty(LOCAL);
             shutdownServer(ip+":"+ADMIN_PORT);
@@ -71,6 +73,7 @@ public class NodesHandler implements NodesHandlerLocal{
         logger.warn("Slave node up!");
         Host slave   = createHost();
         slaveAddress = slave.getAdress();
+        logger.warn("masterAddress: "+masterIpAdress+", slaveAddress: "+slaveAddress);
         List<Host> hosts = nodeRequester.register(masterIpAdress, slaveAddress, slave.getAlias());
         
         if(!hosts.isEmpty())
@@ -83,7 +86,9 @@ public class NodesHandler implements NodesHandlerLocal{
     
     @PreDestroy
     public void destroy(){
-        nodeRequester.unregister(masterIpAdress, slaveAddress);
+        if(masterIpAdress != null){
+            nodeRequester.unregister(masterIpAdress, slaveAddress);
+        }
     }
     
     private Host createHost(){
@@ -130,7 +135,7 @@ public class NodesHandler implements NodesHandlerLocal{
     @Lock(LockType.READ)
     @Override
     public boolean isMaster(){
-        return masterIpAdress != null;
+        return master;
     }
     
     @Lock(LockType.READ)

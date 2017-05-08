@@ -15,6 +15,7 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 
 import jmsAPI.UserJMSMessage;
+import model.Host;
 import model.User;
 
 @Stateless
@@ -55,7 +56,7 @@ public class ChatMessages implements ChatMessagesLocal{
     @Override
     public void registerMessage(String username, String password, String address, String alias, String sessionId) {
         try{
-            UserJMSMessage message = new UserJMSMessage(username, password, address, alias, UserJMSMessage.types.REGISTER);
+            UserJMSMessage message = new UserJMSMessage(new User(username, password, new Host(address, alias)), UserJMSMessage.types.REGISTER);
             message.setSessionId(sessionId);
             ObjectMessage msg      = session.createObjectMessage(message);
             sender.send(msg);

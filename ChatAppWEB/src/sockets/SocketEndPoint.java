@@ -85,7 +85,6 @@ public class SocketEndPoint implements MessageListener{
     
     
     private void registerUser(String username, String password, Session session){
-        
         if(nodeHandler.isMaster())
             chatMessages.registerMessage(username, password, hostBean.getOwnerAddress(), hostBean.getOwnerAlias(), session.getId());
         else
@@ -135,7 +134,11 @@ public class SocketEndPoint implements MessageListener{
             try {
                 SocketMessage msg = (SocketMessage) ((ObjectMessage) message).getObject();
                 Session session = findSession(msg.getSessionId());
+                System.out.println("Socket username: "+msg.getUsername());
+                System.out.println("Socket username: "+msg.getSessionId());
+                System.out.println("Found socket: "+session);
                 if(session != null){
+                    System.out.println("Hello from slave "+msg.getMessageType());
                     ObjectMapper mapper = new ObjectMapper();
                     String output       = mapper.writeValueAsString(msg);
                     session.getBasicRemote().sendText(output);

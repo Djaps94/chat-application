@@ -73,10 +73,6 @@ public class UserJMSMessage implements Serializable{
         return messageType;
     }
     
-    public User getUser(){
-        return u;
-    }
-
     public String getSessionId() {
         return sessionId;
     }
@@ -87,5 +83,13 @@ public class UserJMSMessage implements Serializable{
 
     public void setMessageType(types messageType) {
         this.messageType = messageType;
+    }
+
+    public User getU() {
+        return u;
+    }
+
+    public void setU(User u) {
+        this.u = u;
     }
 }

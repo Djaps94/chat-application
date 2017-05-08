@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import beans.HostManagmentLocal;
 import beans.ResponseSocketMessageLocal;
 import jmsAPI.SocketMessage;
-import model.User;
+import jmsAPI.UserJMSMessage;
 import util.NodesHandlerLocal;
 
 @Stateless
@@ -30,33 +30,33 @@ public class UserChatService {
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void registerUser(User user){
+    public void registerUser(UserJMSMessage message){
         if(!nodeHandler.isMaster()){
-            hostBean.getCurrentHost().getRegisteredUsers().add(user);
-        
-            socketSender.registerMessage(user, SocketMessage.type.REGISTER);
+            hostBean.getCurrentHost().getRegisteredUsers().add(message.getU());
+            
+            socketSender.registerMessage(message.getU(), SocketMessage.type.REGISTER, message.getSessionId());
         }
     }
     
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addUser(User user){
+    public void addUser(UserJMSMessage message){
         if(!nodeHandler.isMaster()){
-            hostBean.getCurrentHost().getActiveUsers().add(user);
+            hostBean.getCurrentHost().getActiveUsers().add(message.getU());
             
-            socketSender.loginMessage(user, SocketMessage.type.LOGIN);
+            socketSender.loginMessage(message.getU(), SocketMessage.type.LOGIN, message.getSessionId());
         }
     }
     
     @POST
     @Path("/logout")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void removeUser(User user){
+    public void removeUser(UserJMSMessage message){
         if(!nodeHandler.isMaster()){
-            hostBean.getCurrentHost().getActiveUsers().remove(user);
+            hostBean.getCurrentHost().getActiveUsers().remove(message.getU());
             
-            socketSender.logoutMessage(user, SocketMessage.type.LOGOUT);
+            socketSender.logoutMessage(message.getU(), SocketMessage.type.LOGOUT, message.getSessionId());
         }
     }
     

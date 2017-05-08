@@ -1,16 +1,22 @@
 <div style="margin-left: 40%;margin-top: 10%;" ng-controller="registerController">
-	<div ng-show="show" class="col-sm-6" style="margin-bottom: 9%;text-align: left; color: red;">
+	<div ng-show="userInputs.show" class="col-sm-6" style="margin-bottom: 9%;text-align: left; color: red;">
 		<span>Username already exits</span>
+	</div>
+	<div style="margin-bottom: 7%;margin-top: 4%;">
+		<h3>Register and chat</h3>
 	</div>
 	<form>
 	  <div class="form-group">
 	    <label for="username">Username</label>
-	    <input style="{{ userinput }}" type="text" class="form-control col-sm-4" id="username" ng-model="username">
+	    <input style="{{ userinput }}" type="text" class="form-control col-sm-4" id="username" ng-model="userInputs.username">
 	  </div>
 	  <div class="form-group">
 	    <label for="password">Password</label>
-	    <input style="{{ passinput }}" type="password" class="form-control col-sm-4" id="password" ng-model="password">
+	    <input style="{{ passinput }}" type="password" class="form-control col-sm-4" id="password" ng-model="userInputs.password">
 	  </div>
 	  <button class="btn btn-sm btn-info" ng-click="register()">Register</button>
 	</form>
+	<div style="margin-top: 5%;">
+		<span>Already have an account? Then go <a href="#!/login">sign in</a></span>
+	</div>
 </div>

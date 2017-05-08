@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="resources/css/bootstrap.min.css"></link>
 <script src="resources/css/jquery-3.2.1.min.js"></script>
 <script src="resources/css/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="resources/css/chat.css"></link>
 <script src="resources/js/angular.min.js"></script>
 <script src="resources/js/angular-route.js"></script>
 <script src="resources/js/app.js"></script>
@@ -27,12 +30,15 @@
 	
 	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    <ul class="navbar-nav mr-auto">
-	      <li class="nav-item active">
-	        <a class="nav-link" href="#!/chat">Chat<span class="sr-only">(current)</span></a>
+	      <li class="nav-item">
+	        <a class="nav-link" href="#!/login">Get started</a>
 	      </li>
 	      <li class="nav-item">
 	        <a class="nav-link" href="#!/login">Sign in</a>
 	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="#!/chat">All chat<span class="sr-only">(current)</span></a>
+	      </li>	
 	      <li class="nav-item">
 	        <a class="nav-link" href="#" ng-click=logout() ng-if="logButton">Logout</a>
 	      </li>

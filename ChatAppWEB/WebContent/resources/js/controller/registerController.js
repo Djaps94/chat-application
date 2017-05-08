@@ -5,18 +5,23 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 	
 	var wsaddress = "ws://"+url.hostname+":"+url.port+"/ChatApp/webchat";
 	
-	$scope.show = false;
+	$scope.userInputs = {
+			username: "",
+			password: "",
+			show    : false,
+			
+	};
 	
 	try{
 		socket = new WebSocket(wsaddress);
 		
 		socket.onopen = function(){
-			console.log("socket opened!");
+			console.log("Socket register opened!");
 		}
 		
 		socket.onclose = function(){
 			socket.close();
-			console.log("socket closed!");
+			console.log("Socket register closed!");
 		}
 		
 		socket.onmessage = function(message){
@@ -29,13 +34,7 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 											$location.path("/login");
 										}); }, 2000);
 									break;
-			case 'USERNAME_EXISTS': {
-									$scope.userinput = "border-color: red";
-									$scope.passinput = "border-color: red";
-									$scope.show      = true;
-									$scope.username  = "";
-									$scope.password  = "";
-									}; 
+			case 'USERNAME_EXISTS': notif(); 
 									break;
 			}
 		}
@@ -45,10 +44,11 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 	}
 	
 	$scope.register = function(){
-		validation($scope.username, $scope.password);
+		if(!validation($scope.userInputs.username, $scope.userInputs.password))
+			return;
 		var socketMessage = {
-			username: $scope.username,
-			password: $scope.password,
+			username: $scope.userInputs.username,
+			password: $scope.userInputs.password,
 			messageType: 'REGISTER'
 		};
 		socket.send(JSON.stringify(socketMessage));
@@ -56,16 +56,15 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 	}
 	
 	var validation = function(username, password){
-		if(username == "" || username == undefined || password == "" || password == undefined || (username == "" && password == "")){
-			return;
+		if(username === "" || username == undefined || password === "" || password == undefined || (username === "" && password === "")){
+			return false;
 		}
+		return true;
 	}
 	
 	var notif = function(){
-		$scope.userinput = "border-color: red";
-		$scope.passinput = "border-color: red";
-		$scope.show      = true;
-		$scope.username  = "";
-		$scope.password  = "";
+		$scope.userInputs.show      = true;
+		$scope.userInputs.username  = "";
+		$scope.userInputs.password  = "";
 	}
 }]);

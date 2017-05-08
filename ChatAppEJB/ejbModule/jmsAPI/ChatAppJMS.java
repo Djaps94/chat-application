@@ -45,8 +45,10 @@ public class ChatAppJMS implements MessageListener {
                     String sessionId = (String) message.getObjectProperty("registerAnswer");
                     if(!user.getRegistered()){
                         hostBean.getCurrentHost().getRegisteredUsers().add(user);
+                        UserJMSMessage msg = new UserJMSMessage(user, UserJMSMessage.types.REGISTER);
+                        msg.setSessionId(sessionId);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
-                                                       .forEach(h -> nodeRequester.registerUser(h.getAdress(), user));
+                                                       .forEach(h -> nodeRequester.registerUser(h.getAdress(), msg));
                         
                         socketSender.registerMessage(user, SocketMessage.type.REGISTER, sessionId);
                         
@@ -57,9 +59,11 @@ public class ChatAppJMS implements MessageListener {
                     User user = (User) ((ObjectMessage) message).getObject();
                     String sessionId = (String) message.getObjectProperty("login");
                     if(!user.getLogged() && !user.getNotregistered()){
+                        UserJMSMessage msg = new UserJMSMessage(user, UserJMSMessage.types.REGISTER);
+                        msg.setSessionId(sessionId);
                         hostBean.getCurrentHost().getActiveUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
-                                                       .forEach(h -> nodeRequester.addUser(h.getAdress(), user));
+                                                       .forEach(h -> nodeRequester.addUser(h.getAdress(), msg));
                         
                         socketSender.loginMessage(user, SocketMessage.type.LOGIN, sessionId);
                         
@@ -70,9 +74,11 @@ public class ChatAppJMS implements MessageListener {
                 }else if(message.propertyExists("logout")){
                     User logout = (User) ((ObjectMessage) message).getObject();
                     if(logout.getLogout()){
+                        UserJMSMessage msg = new UserJMSMessage(logout, UserJMSMessage.types.REGISTER);
+                        //msg.setSessionId(sessionId);
                         hostBean.getCurrentHost().getActiveUsers().remove(logout);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
-                                                       .forEach(h -> nodeRequester.removeUser(h.getAdress(), logout));
+                                                       .forEach(h -> nodeRequester.removeUser(h.getAdress(), msg));
                         
                         socketSender.logoutMessage(logout, SocketMessage.type.LOGOUT, "");
                       

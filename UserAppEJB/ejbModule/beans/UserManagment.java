@@ -47,8 +47,12 @@ public class UserManagment implements UserManagmentLocal{
 	@Lock(LockType.WRITE)
 	@Override
 	public User register(String username, String password, String address, String alias){
-		if(!checkParams(username, password, address, alias))
-			return null;
+		if(!checkParams(username, password, address, alias)){
+		    User user = new User();
+		    user.setRegistered(true);
+		    return user;
+		}
+			
 		
 		User user = new User(username, password, new Host(address, alias));
 		
@@ -136,7 +140,8 @@ public class UserManagment implements UserManagmentLocal{
 	
 	private Boolean checkParams(String... args){
 		for(String arg : args){
-			if(arg == "" || arg.equals(null))
+			System.out.println(arg);
+		    if(arg == "" || arg == null)
 				return false;
 		}
 		

@@ -65,7 +65,7 @@ public class UserMessages implements UserMessagesLocal{
     @Override
     public void registerMessage(UserJMSMessage message) {
         try {
-            User user         = userBean.register(message.getUsername(), message.getPassword(), message.getAddress(), message.getAlias());
+            User user         = userBean.register(message.getU().getUsername(), message.getU().getPassword(), message.getU().getHost().getAdress(), message.getU().getHost().getAlias());
             ObjectMessage msg = session.createObjectMessage(user);
             msg.setObjectProperty("registerAnswer", message.getSessionId());
             sender.send(msg);
@@ -94,7 +94,7 @@ public class UserMessages implements UserMessagesLocal{
     @Override
     public void logoutMessage(UserJMSMessage message) {
         try{
-            User logout     = userBean.logout(message.getUser());
+            User logout     = userBean.logout(message.getU());
             ObjectMessage m = session.createObjectMessage(logout);
             m.setObjectProperty("logout", message.getSessionId());
             sender.send(m);
