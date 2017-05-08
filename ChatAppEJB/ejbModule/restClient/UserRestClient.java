@@ -29,31 +29,33 @@ public class UserRestClient implements UserRestClientLocal{
     }
     
     @Override
-    public void registerUser(String masterAddress, String username, String password, String address, String alias){
+    public void registerUser(String masterAddress, String username, String password, String address, String alias, String sessionId){
         ResteasyWebTarget target = createResteasyClient("http://"+masterAddress+"/UserApp/rest/user/register");
         Form form                = new Form();
         form.param("username", username);
         form.param("password", password);
         form.param("address", address);
         form.param("alias", alias);
+        form.param("session", sessionId);
         Entity<Form> entity = Entity.form(form);
         target.request().post(entity);
     } 
     
 
     @Override
-    public void loginUser(String masterAddress, String username, String password) {
+    public void loginUser(String masterAddress, String username, String password, String sessionId) {
         ResteasyWebTarget target = createResteasyClient("http://"+masterAddress+"/UserApp/rest/user/login");
         Form form                = new Form();
         form.param("username", username);
         form.param("password", password);
+        form.param("session", sessionId);
         Entity<Form> entity = Entity.form(form);
         target.request().post(entity);
         
     }
 
     @Override
-    public void logoutUser(String masterAddress, User user) {
+    public void logoutUser(String masterAddress, User user, String sessionId) {
         ResteasyWebTarget target = createResteasyClient("http://"+masterAddress+"/UserApp/rest/user/logout");
         target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
     }    

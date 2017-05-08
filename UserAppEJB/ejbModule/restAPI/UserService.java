@@ -31,17 +31,26 @@ public class UserService{
 	@POST
 	@Path("/register")
 	public void register(@FormParam("username") String username, @FormParam("password") String password,
-	                     @FormParam("address") String address, @FormParam("alias") String alias){
+	                     @FormParam("address") String address, @FormParam("alias") String alias,
+	                     @FormParam("session") String sessionId){
 		
-		User u = new User(username, password, new Host(address, alias)); 
-		userMessages.registerMessage(new UserJMSMessage(u, UserJMSMessage.types.REGISTER));
+		User u = new User(username, password, new Host(address, alias));
+		UserJMSMessage message = new UserJMSMessage(u, UserJMSMessage.types.REGISTER);
+		message.setSessionId(sessionId);
+		userMessages.registerMessage(message);
 	}
 	
 	@POST
 	@Path("/login")
-	public void login(@FormParam("username") String username, @FormParam("password") String password){
+	public void login(@FormParam("username") String username, @FormParam("password") String password,
+	                  @FormParam("session") String sessionId){
 	    
-	    userMessages.loginMessage(username, password);	    
+	    UserJMSMessage message = new UserJMSMessage();
+	    message.setUsername(username);
+	    message.setPassword(password);
+	    message.setSessionId(sessionId);
+	    message.setMessageType(UserJMSMessage.types.LOGIN);
+	    userMessages.loginMessage(message);	    
 	}
 	
 	@POST

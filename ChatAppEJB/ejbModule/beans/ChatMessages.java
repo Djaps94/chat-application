@@ -53,9 +53,10 @@ public class ChatMessages implements ChatMessagesLocal{
     }    
     
     @Override
-    public void registerMessage(String username, String password, String address, String alias) {
+    public void registerMessage(String username, String password, String address, String alias, String sessionId) {
         try{
             UserJMSMessage message = new UserJMSMessage(username, password, address, alias, UserJMSMessage.types.REGISTER);
+            message.setSessionId(sessionId);
             ObjectMessage msg      = session.createObjectMessage(message);
             sender.send(msg);
         }
@@ -63,12 +64,13 @@ public class ChatMessages implements ChatMessagesLocal{
     }
 
     @Override
-    public void loginMessage(String username, String password) {
+    public void loginMessage(String username, String password, String sessionId) {
         try{
             UserJMSMessage message = new UserJMSMessage();
             message.setMessageType(UserJMSMessage.types.LOGIN);
             message.setUsername(username);
             message.setPassword(password);
+            message.setSessionId(sessionId);
             ObjectMessage msg      = session.createObjectMessage(message);
             sender.send(msg);
         }
@@ -76,9 +78,10 @@ public class ChatMessages implements ChatMessagesLocal{
     }
 
     @Override
-    public void logoutMessage(User u) {
+    public void logoutMessage(User u, String sessionId) {
         try{
             UserJMSMessage message = new UserJMSMessage(u, UserJMSMessage.types.LOGOUT);
+            message.setSessionId(sessionId);
             ObjectMessage msg      = session.createObjectMessage(message);
             sender.send(msg);
         }

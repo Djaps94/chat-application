@@ -21,6 +21,8 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 		
 		socket.onmessage = function(message){
 			var socketMessage = JSON.parse(message.data);
+			console.log("Message recieved");
+			console.log(socketMessage.messageType);
 			switch(socketMessage.messageType){
 			case 	   'REGISTER' : $timeout(function(){
 										$rootScope.$apply(function(){

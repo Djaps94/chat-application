@@ -10,7 +10,7 @@ import model.User;
 public interface UserRestClientLocal {
 
     public List<User> getRegisteredUsers(String masterAddress);
-    public void registerUser(String masterAddress, String username, String password, String address, String alias);
-    public void loginUser(String masterAddress, String username, String password);
-    public void logoutUser(String masterAddress, User user);
+    public void registerUser(String masterAddress, String username, String password, String address, String alias, String sessionId);
+    public void loginUser(String masterAddress, String username, String password, String sessionId);
+    public void logoutUser(String masterAddress, User user, String sessionId);
 }

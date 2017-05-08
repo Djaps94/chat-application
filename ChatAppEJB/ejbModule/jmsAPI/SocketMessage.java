@@ -21,6 +21,7 @@ public class SocketMessage implements Serializable{
     private String username;
     private String password;
     private String errorMessage;
+    private String sessionId;
     
     public SocketMessage() { }
     
@@ -63,5 +64,15 @@ public class SocketMessage implements Serializable{
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

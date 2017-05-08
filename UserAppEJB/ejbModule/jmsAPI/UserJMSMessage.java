@@ -20,6 +20,7 @@ public class UserJMSMessage implements Serializable{
     private String alias;
     private types messageType;
     private User u;
+    private String sessionId;
     
     public UserJMSMessage() { }
     
@@ -67,12 +68,24 @@ public class UserJMSMessage implements Serializable{
     public void setAlias(String alias) {
         this.alias = alias;
     }
-
+    
     public types getMessageType() {
         return messageType;
     }
     
     public User getUser(){
         return u;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setMessageType(types messageType) {
+        this.messageType = messageType;
     }
 }

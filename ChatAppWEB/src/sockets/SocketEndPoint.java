@@ -36,10 +36,6 @@ import util.NodesHandlerLocal;
         })
 public class SocketEndPoint implements MessageListener{
     
-    private static final String REGISTER = "register";
-    private static final String LOGIN    = "login";
-    private static final String LOGOUT   = "logout";
-
     @EJB
     private UserSocketSessionLocal userSession;
     
@@ -59,7 +55,7 @@ public class SocketEndPoint implements MessageListener{
     
     @OnOpen
     public void onOpen(Session session){
-       
+        storeSession(session.getId(), session);
     }
     
     @OnClose
@@ -89,26 +85,23 @@ public class SocketEndPoint implements MessageListener{
     
     
     private void registerUser(String username, String password, Session session){
-        storeSession(username+REGISTER, session);
         
         if(nodeHandler.isMaster())
-            chatMessages.registerMessage(username, password, hostBean.getOwnerAddress(), hostBean.getOwnerAlias());
+            chatMessages.registerMessage(username, password, hostBean.getOwnerAddress(), hostBean.getOwnerAlias(), session.getId());
         else
-            userRequester.registerUser(nodeHandler.getMasterAddress(), username, password, hostBean.getOwnerAddress(), hostBean.getOwnerAlias());
+            userRequester.registerUser(nodeHandler.getMasterAddress(), username, password, hostBean.getOwnerAddress(), hostBean.getOwnerAlias(), session.getId());
             
     }
     
     private void loginUser(String username, String password, Session session){
-        storeSession(username+LOGIN, session);
 
         if(nodeHandler.isMaster())
-            chatMessages.loginMessage(username, password);
+            chatMessages.loginMessage(username, password, session.getId());
         else
-            userRequester.loginUser(nodeHandler.getMasterAddress(), username, password);
+            userRequester.loginUser(nodeHandler.getMasterAddress(), username, password, session.getId());
     }
     
     private void logoutUser(String username, String password, Session session){
-        storeSession(username+LOGOUT, session);
         
         Optional<User> opt = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
                                                                         .findFirst();
@@ -120,9 +113,9 @@ public class SocketEndPoint implements MessageListener{
         }
         
         if(nodeHandler.isMaster())
-            chatMessages.logoutMessage(u);
+            chatMessages.logoutMessage(u, session.getId());
         else
-            userRequester.logoutUser(nodeHandler.getMasterAddress(), u); 
+            userRequester.logoutUser(nodeHandler.getMasterAddress(), u, session.getId()); 
     }
 
     
@@ -141,17 +134,7 @@ public class SocketEndPoint implements MessageListener{
         if(message instanceof ObjectMessage){
             try {
                 SocketMessage msg = (SocketMessage) ((ObjectMessage) message).getObject();
-                Session session   = null;
-                switch(msg.getMessageType()){
-                case   ALREADY_LOGED: session = findSession(msg.getUsername()+LOGIN);    break;
-                case           LOGIN: session = findSession(msg.getUsername()+LOGIN);    break;
-                case          LOGOUT: session = findSession(msg.getUsername()+LOGOUT);   break;
-                case         MESSAGE: session = findSession(msg.getUsername());          break;
-                case  NOT_REGISTERED: session = findSession(msg.getUsername()+LOGIN);    break;
-                case        REGISTER: session = findSession(msg.getUsername()+REGISTER); break;
-                case USERNAME_EXISTS: session = findSession(msg.getUsername()+REGISTER); break;
-                case      NOT_LOGOUT: session = findSession(msg.getUsername()+LOGOUT); break;
-                }
+                Session session = findSession(msg.getSessionId());
                 if(session != null){
                     ObjectMapper mapper = new ObjectMapper();
                     String output       = mapper.writeValueAsString(msg);
@@ -164,8 +147,8 @@ public class SocketEndPoint implements MessageListener{
         
     }
     
-    private Session findSession(String username){
-        return userSession.getSession(username);
+    private Session findSession(String id){
+        return userSession.getSession(id);
     }
         
     

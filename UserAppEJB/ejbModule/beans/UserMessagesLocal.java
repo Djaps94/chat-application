@@ -8,7 +8,7 @@ import jmsAPI.UserJMSMessage;
 public interface UserMessagesLocal {
     
     public void registerMessage(UserJMSMessage message);
-    public void loginMessage(String username, String password);
+    public void loginMessage(UserJMSMessage message);
     public void logoutMessage(UserJMSMessage message);
     public void getRegisteredMessage();
     public void getActiveMessage();

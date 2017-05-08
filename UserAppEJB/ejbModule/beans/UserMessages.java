@@ -67,18 +67,18 @@ public class UserMessages implements UserMessagesLocal{
         try {
             User user         = userBean.register(message.getUsername(), message.getPassword(), message.getAddress(), message.getAlias());
             ObjectMessage msg = session.createObjectMessage(user);
-            msg.setObjectProperty("registerAnswer", "");
+            msg.setObjectProperty("registerAnswer", message.getSessionId());
             sender.send(msg);
         }
         catch (UsernameExistsException | JMSException e) { }
     }
 
     @Override
-    public void loginMessage(String username, String password) {
+    public void loginMessage(UserJMSMessage message) {
         try{
-            User user            = userBean.login(username, password);
+            User user            = userBean.login(message.getUsername(), message.getPassword());
             ObjectMessage msg    = session.createObjectMessage(user);
-            msg.setObjectProperty("login", "");
+            msg.setObjectProperty("login", message.getSessionId());
             sender.send(msg);
         }
         catch (InvalidCredentialsException | JMSException e) { 
@@ -96,7 +96,7 @@ public class UserMessages implements UserMessagesLocal{
         try{
             User logout     = userBean.logout(message.getUser());
             ObjectMessage m = session.createObjectMessage(logout);
-            m.setObjectProperty("logout", "");
+            m.setObjectProperty("logout", message.getSessionId());
             sender.send(m);
         }
         catch(JMSException e) { }

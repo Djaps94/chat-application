@@ -42,29 +42,31 @@ public class ChatAppJMS implements MessageListener {
             if(message instanceof ObjectMessage){
                 if(message.propertyExists("registerAnswer")){
                     User user = (User) ((ObjectMessage) message).getObject();
+                    String sessionId = (String) message.getObjectProperty("registerAnswer");
                     if(!user.getRegistered()){
                         hostBean.getCurrentHost().getRegisteredUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.registerUser(h.getAdress(), user));
                         
-                        socketSender.registerMessage(user, SocketMessage.type.REGISTER);
+                        socketSender.registerMessage(user, SocketMessage.type.REGISTER, sessionId);
                         
                     }else
-                        socketSender.registerMessage(user, SocketMessage.type.USERNAME_EXISTS);
+                        socketSender.registerMessage(user, SocketMessage.type.USERNAME_EXISTS, sessionId);
                 }                
                 else if(message.propertyExists("login")){
                     User user = (User) ((ObjectMessage) message).getObject();
+                    String sessionId = (String) message.getObjectProperty("login");
                     if(!user.getLogged() && !user.getNotregistered()){
                         hostBean.getCurrentHost().getActiveUsers().add(user);
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.addUser(h.getAdress(), user));
                         
-                        socketSender.loginMessage(user, SocketMessage.type.LOGIN);
+                        socketSender.loginMessage(user, SocketMessage.type.LOGIN, sessionId);
                         
                     }else if(user.getLogged())
-                        socketSender.loginMessage(user, SocketMessage.type.ALREADY_LOGED);
+                        socketSender.loginMessage(user, SocketMessage.type.ALREADY_LOGED, sessionId);
                     else if(user.getNotregistered())
-                        socketSender.loginMessage(user, SocketMessage.type.NOT_REGISTERED);
+                        socketSender.loginMessage(user, SocketMessage.type.NOT_REGISTERED, sessionId);
                 }else if(message.propertyExists("logout")){
                     User logout = (User) ((ObjectMessage) message).getObject();
                     if(logout.getLogout()){
@@ -72,10 +74,10 @@ public class ChatAppJMS implements MessageListener {
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.removeUser(h.getAdress(), logout));
                         
-                        socketSender.logoutMessage(logout, SocketMessage.type.LOGOUT);
+                        socketSender.logoutMessage(logout, SocketMessage.type.LOGOUT, "");
                       
                     }else
-                        socketSender.logoutMessage(logout, SocketMessage.type.NOT_LOGOUT);
+                        socketSender.logoutMessage(logout, SocketMessage.type.NOT_LOGOUT, "");
                 }
             }
         }
