@@ -1,5 +1,7 @@
 package beans;
 
+import java.util.List;
+
 import javax.ejb.Local;
 import javax.websocket.Session;
 
@@ -11,5 +13,6 @@ public interface UserSocketSessionLocal {
     public void removeUserSession(Session value);
     public boolean isSessionActive(String username);
     public Session getSession(String key);
+    public List<Session> getAllSessions();
     
 }

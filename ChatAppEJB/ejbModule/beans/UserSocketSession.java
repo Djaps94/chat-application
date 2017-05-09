@@ -1,8 +1,10 @@
 package beans;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.ConcurrencyManagement;
@@ -61,5 +63,12 @@ public class UserSocketSession implements UserSocketSessionLocal{
     public void removeUserSession(Session value) {
         sessionMap.values().remove(value);
         
+    }
+    
+    @Override
+    @Lock(LockType.READ)
+    public List<Session> getAllSessions(){
+        return sessionMap.entrySet().stream().map(e -> e.getValue())
+                                             .collect(Collectors.toList());
     }
 }

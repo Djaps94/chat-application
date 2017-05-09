@@ -23,7 +23,7 @@ public class SocketMessage implements Serializable{
     private type messageType;
     private String username;
     private String password;
-    private String errorMessage;
+    private String hostAddress;
     private String sessionId;
     
     public SocketMessage() { }
@@ -60,13 +60,13 @@ public class SocketMessage implements Serializable{
     }
 
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getHostAddress() {
+        return hostAddress;
     }
 
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setHostAddress(String hostAddress) {
+        this.hostAddress = hostAddress;
     }
 
 

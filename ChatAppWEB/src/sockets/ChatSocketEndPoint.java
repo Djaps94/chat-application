@@ -8,6 +8,7 @@ import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -56,11 +57,7 @@ public class ChatSocketEndPoint implements MessageListener{
                 ObjectMapper mapper         = new ObjectMapper();
                 SocketMessage socketMessage = (SocketMessage) mapper.readValue(message, SocketMessage.class);
                 switch(socketMessage.getMessageType()){
-                case ACTIVE_USERS: sendActiveUsers(session); break;
-                case ADD_ACTIVE:
-                    break;
-                case REMOVE_ACTIVE:
-                    break;
+                case  ACTIVE_USERS: sendActiveUsers(session); break;
                 }
             }
             catch(Exception e) { e.printStackTrace(); }
@@ -85,6 +82,18 @@ public class ChatSocketEndPoint implements MessageListener{
 
     @Override
     public void onMessage(Message message) {
+        if(message instanceof ObjectMessage){
+            try{
+                ObjectMapper mapper    = new ObjectMapper();
+                List<User> activeUsers = hostBean.getCurrentHost().getActiveUsers(); 
+                String output          = mapper.writeValueAsString(activeUsers);
+                List<Session> sessions = userSession.getAllSessions();
+                for(Session session : sessions){
+                    session.getBasicRemote().sendText(output);
+                }
+            }
+            catch (IOException e) { e.printStackTrace(); }
+        }
     }
     
 }

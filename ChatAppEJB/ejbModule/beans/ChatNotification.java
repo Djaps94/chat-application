@@ -15,16 +15,15 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 
 import jmsAPI.SocketMessage;
-import model.User;
 
 @Stateless
-@Local(ResponseSocketMessageLocal.class)
-public class ResponseSocketMessage implements ResponseSocketMessageLocal{
+@Local(ChatNotificationLocal.class)
+public class ChatNotification implements ChatNotificationLocal{
     
     @Resource(mappedName = "java:/ConnectionFactory")
     private ConnectionFactory factory;
     
-    @Resource(mappedName = "java:/jms/queue/socketQueue")
+    @Resource(mappedName = "java:/jms/queue/socketChatQueue")
     private Queue socketQueue;
     
     private Connection connection;
@@ -51,35 +50,15 @@ public class ResponseSocketMessage implements ResponseSocketMessageLocal{
         }
         catch (JMSException e) { }
     } 
-    
-    
-    public void registerMessage(User user, SocketMessage.type messageType, String sessionId){
+
+    @Override
+    public void sendNotification() {
         try{
-            SocketMessage message = new SocketMessage(user.getUsername(),user.getPassword(), messageType );
-            message.setSessionId(sessionId);
+            SocketMessage message = new SocketMessage();
             ObjectMessage msg     = session.createObjectMessage(message);
             sender.send(msg);
         }
         catch(JMSException e) { }
     }
-    
-    public void loginMessage(User user, SocketMessage.type messageType, String sessionId){
-        try{
-            SocketMessage message = new SocketMessage(user.getUsername(), user.getPassword(), messageType);
-            message.setSessionId(sessionId);
-            ObjectMessage msg     = session.createObjectMessage(message);
-            sender.send(msg);
-        }
-        catch(JMSException e) { }
-    }
-    
-    public void logoutMessage(User user, SocketMessage.type messageType, String sessionId){
-        try{
-            SocketMessage message = new SocketMessage(user.getUsername(), user.getPassword(), messageType);
-            message.setSessionId(sessionId);
-            ObjectMessage msg     = session.createObjectMessage(message);
-            sender.send(msg);
-        }
-        catch(JMSException e) { }
-    }
+
 }

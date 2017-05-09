@@ -76,7 +76,7 @@ public class UserMessages implements UserMessagesLocal{
     @Override
     public void loginMessage(UserJMSMessage message) {
         try{
-            User user            = userBean.login(message.getUsername(), message.getPassword());
+            User user            = userBean.login(message.getUsername(), message.getPassword(), message.getAddress());
             ObjectMessage msg    = session.createObjectMessage(user);
             msg.setObjectProperty("login", message.getSessionId());
             sender.send(msg);

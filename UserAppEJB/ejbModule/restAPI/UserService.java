@@ -43,12 +43,13 @@ public class UserService{
 	@POST
 	@Path("/login")
 	public void login(@FormParam("username") String username, @FormParam("password") String password,
-	                  @FormParam("session") String sessionId){
+	                  @FormParam("session") String sessionId, @FormParam("address") String hostAddress){
 	    
 	    UserJMSMessage message = new UserJMSMessage();
 	    message.setUsername(username);
 	    message.setPassword(password);
 	    message.setSessionId(sessionId);
+	    message.setAddress(hostAddress);
 	    message.setMessageType(UserJMSMessage.types.LOGIN);
 	    userMessages.loginMessage(message);	    
 	}

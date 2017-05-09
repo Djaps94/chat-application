@@ -43,12 +43,13 @@ public class UserRestClient implements UserRestClientLocal{
     
 
     @Override
-    public void loginUser(String masterAddress, String username, String password, String sessionId) {
+    public void loginUser(String masterAddress, String username, String password, String sessionId, String hostAddress) {
         ResteasyWebTarget target = createResteasyClient("http://"+masterAddress+"/UserApp/rest/user/login");
         Form form                = new Form();
         form.param("username", username);
         form.param("password", password);
         form.param("session", sessionId);
+        form.param("address", hostAddress);
         Entity<Form> entity = Entity.form(form);
         target.request().post(entity);
         

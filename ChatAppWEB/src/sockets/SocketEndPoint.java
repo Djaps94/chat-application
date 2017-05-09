@@ -70,7 +70,7 @@ public class SocketEndPoint implements MessageListener{
             try {
                 SocketMessage message = mapper.readValue(socketMessage, SocketMessage.class);
                 switch(message.getMessageType()){
-                case    LOGIN: loginUser(message.getUsername(), message.getPassword(), session); break;
+                case    LOGIN: loginUser(message.getUsername(), message.getPassword(), session, message.getHostAddress()); break;
                 case   LOGOUT: logoutUser(message.getUsername(), message.getPassword(), session);break;
                 case REGISTER: registerUser(message.getUsername(), message.getPassword(), session); break;
                 default: break;
@@ -91,12 +91,12 @@ public class SocketEndPoint implements MessageListener{
             
     }
     
-    private void loginUser(String username, String password, Session session){
+    private void loginUser(String username, String password, Session session, String hostAddress){
 
         if(nodeHandler.isMaster())
-            chatMessages.loginMessage(username, password, session.getId());
+            chatMessages.loginMessage(username, password, session.getId(), hostAddress);
         else
-            userRequester.loginUser(nodeHandler.getMasterAddress(), username, password, session.getId());
+            userRequester.loginUser(nodeHandler.getMasterAddress(), username, password, session.getId(), hostAddress);
     }
     
     private void logoutUser(String username, String password, Session session){
@@ -135,7 +135,7 @@ public class SocketEndPoint implements MessageListener{
                 Session session = findSession(msg.getSessionId());
                 System.out.println("Socket username: "+msg.getUsername());
                 System.out.println("Socket username: "+msg.getSessionId());
-                System.out.println("Found socket: "+session);
+                System.out.println("Message type: "+msg.getMessageType());
                 if(session != null){
                     System.out.println("Hello from slave "+msg.getMessageType());
                     ObjectMapper mapper = new ObjectMapper();

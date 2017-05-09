@@ -52,6 +52,7 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 		var socketMessage = {
 				username : $scope.logInfo.username,
 				password : $scope.logInfo.password,
+				hostAddress: "127.0.0.1"+":"+window.location.port,
 				messageType : 'LOGIN'
 		};
 		socket.send(JSON.stringify(socketMessage));
@@ -84,6 +85,7 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 		$scope.logInfo.username  = "";
 		$scope.logInfo.password  = "";
 		$scope.errorMessage = "Your are not registered."
+		$scope.$apply();
 	}
 	
 }]);

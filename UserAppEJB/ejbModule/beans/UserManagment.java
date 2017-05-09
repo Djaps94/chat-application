@@ -73,7 +73,7 @@ public class UserManagment implements UserManagmentLocal{
 	
 	@Lock(LockType.WRITE)
 	@Override
-	public User login(String username, String password) {
+	public User login(String username, String password, String hostAddress) {
 		if(!checkParams(username, password))
 			return null;
 		
@@ -102,6 +102,7 @@ public class UserManagment implements UserManagmentLocal{
     			User u = registeredUsers.stream().filter(e -> e.getUsername().equals(username))
     			                                 .findFirst()
     			                                 .get();
+    			u.getHost().setAdress(hostAddress);
     			activeUsers.add(u);
     			return u;
     		}					

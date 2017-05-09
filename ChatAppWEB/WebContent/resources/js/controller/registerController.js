@@ -66,5 +66,6 @@ app.controller('registerController', ['$scope', '$rootScope', '$location', '$tim
 		$scope.userInputs.show      = true;
 		$scope.userInputs.username  = "";
 		$scope.userInputs.password  = "";
+		$scope.$apply();
 	}
 }]);
