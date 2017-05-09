@@ -8,6 +8,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import beans.ChatNotificationLocal;
 import beans.HostManagmentLocal;
 import beans.ResponseSocketMessageLocal;
 import model.User;
@@ -33,6 +34,9 @@ public class ChatAppJMS implements MessageListener {
     
     @EJB
     private ResponseSocketMessageLocal socketSender;
+    
+    @EJB
+    private ChatNotificationLocal chatSender;
     
     public ChatAppJMS() {
     }
@@ -66,6 +70,7 @@ public class ChatAppJMS implements MessageListener {
                                                        .forEach(h -> nodeRequester.addUser(h.getAdress(), msg));
                         
                         socketSender.loginMessage(user, SocketMessage.type.LOGIN, sessionId);
+                        chatSender.sendNotification();
                         
                     }else if(user.getLogged())
                         socketSender.loginMessage(user, SocketMessage.type.ALREADY_LOGED, sessionId);

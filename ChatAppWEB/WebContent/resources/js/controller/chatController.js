@@ -1,6 +1,6 @@
 var app = angular.module('chatContr', []);
 
-app.controller('chatController',['$scope','$location', function($scope, $location){
+app.controller('chatController',['$scope','$location', '$rootScope', function($scope, $location, $rootScope){
 	
 	if(sessionStorage.getItem('user') == null){
 		$location.path("/login");
@@ -20,7 +20,7 @@ app.controller('chatController',['$scope','$location', function($scope, $locatio
 		socket.onopen = function(){
 			console.log("Open chat socket");
 			var user = JSON.parse(sessionStorage.getItem('user'));
-			username = user;
+			username = user.username;
 			var socketMessage = {
 					username : user.name,
 					password : user.pass,
@@ -36,13 +36,10 @@ app.controller('chatController',['$scope','$location', function($scope, $locatio
 		
 		socket.onmessage = function(message){
 			var users = JSON.parse(message.data);
-			users.forEach(function(element){
-				if($scope.objectList.activeUsers.indexOf(element) == -1 && element.username !== username) {
-					$scope.$apply(function() {
-						$scope.objectList.activeUsers.push(element);
-					})
-				}		
+			$scope.$apply(function(){
+				$scope.objectList.activeUsers = users;
 			});
+			console.log("Cao onMessage");
 		}
 		
 		

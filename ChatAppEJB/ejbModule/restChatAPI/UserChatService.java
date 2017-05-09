@@ -48,8 +48,8 @@ public class UserChatService {
     public void addUser(UserJMSMessage message){
         if(!nodeHandler.isMaster()){
             hostBean.getCurrentHost().getActiveUsers().add(message.getU());
-            if(hostBean.getCurrentHost().getAdress().equals(message.getU().getHost().getAdress()))
-                socketSender.loginMessage(message.getU(), SocketMessage.type.LOGIN, message.getSessionId());
+            
+            socketSender.loginMessage(message.getU(), SocketMessage.type.LOGIN, message.getSessionId());
             chatSender.sendNotification();
         }
     }
