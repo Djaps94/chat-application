@@ -1,4 +1,4 @@
-<div class="row chat-wrap" style="margin-top: 5%;">
+<div class="row chat-wrap" style="margin-top: 5%;" ng-controller="chatController">
 
         <!-- Contacts & Conversations -->
         <div class="col-sm-2" style="float:left;margin-left: 5%;margin-right: 3%;">
@@ -11,70 +11,10 @@
                 </div>
             </div>
                 <div class="row content-wrap">
-                    <div class="conversation btn">
+                    <div class="conversation btn" ng-repeat="user in objectList.activeUsers" style="height: 10%;">
                         <div class="media-body">
-                            <h5 class="media-heading" id="contactName">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
-                        </div>
-                    </div>
-                    <div class="conversation btn">
-                        <div class="media-body">
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="pull-right time">Last seen 12:10am</small>
+                            <h5 class="media-heading" id="contactName">{{ user.username }}</h5>
+                            <small class="pull-right time"><i>Online</i></small>
                         </div>
                     </div>
                 </div>

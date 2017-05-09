@@ -36,7 +36,7 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 									break;
 			case  'ALREADY_LOGED' : $location.path("/chat");
 								    break;
-			case 'NOT_REGISTERED' : {}; 
+			case 'NOT_REGISTERED' : { warning(); }; 
 									break;
 			}
 		}

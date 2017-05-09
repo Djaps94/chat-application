@@ -72,7 +72,6 @@ public class SocketEndPoint implements MessageListener{
                 switch(message.getMessageType()){
                 case    LOGIN: loginUser(message.getUsername(), message.getPassword(), session); break;
                 case   LOGOUT: logoutUser(message.getUsername(), message.getPassword(), session);break;
-                case  MESSAGE: break;
                 case REGISTER: registerUser(message.getUsername(), message.getPassword(), session); break;
                 default: break;
                 

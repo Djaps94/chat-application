@@ -1,5 +1,5 @@
 <div style="margin-left: 40%;margin-top: 10%;" ng-controller="loginController">
-	<div ng-show="show" class="col-sm-6" style="margin-bottom: 9%;text-align: left; color: red;">
+	<div ng-show="logInfo.show" class="col-sm-6" style="margin-bottom: 9%;text-align: left; color: red;">
 		<span>{{ errorMessage }}</span>
 	</div>
 	<div style="margin-bottom: 7%; margin-top: 7%;">
@@ -8,11 +8,11 @@
 	<form>
 	  <div class="form-group">
 	    <label for="username">Username</label>
-	    <input style="{{ userinput }}" type="text" class="form-control col-sm-4" id="username" ng-model="username">
+	    <input style="{{ userinput }}" type="text" class="form-control col-sm-4" id="username" ng-model="logInfo.username">
 	  </div>
 	  <div class="form-group">
 	    <label for="password">Password</label>
-	    <input style="{{ passinput }}" type="password" class="form-control col-sm-4" id="password" ng-model="password">
+	    <input style="{{ passinput }}" type="password" class="form-control col-sm-4" id="password" ng-model="logInfo.password">
 	  </div>
 	  <button class="btn btn-sm btn-info" ng-click="login()">Sign in</button>
 	</form>
