@@ -14,5 +14,9 @@ public interface UserSocketSessionLocal {
     public boolean isSessionActive(String username);
     public Session getSession(String key);
     public List<Session> getAllSessions();
+    public boolean isUserActive(String sessionId);
+    public void addPrivateMessage(String sessionId, String username);
+    public void removePrivateMessage(String sessionId);
+    public String getPrivateMessage(String sessionId);
     
 }

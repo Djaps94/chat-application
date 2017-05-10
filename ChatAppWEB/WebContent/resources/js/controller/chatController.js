@@ -17,9 +17,9 @@ app.controller('chatController',['$scope','$location', '$rootScope', function($s
 	$scope.messageContent = "";
 	
 	var url = window.location;
-	var username = "";
+	var username = JSON.parse(sessionStorage.getItem('user')).username;
 	var wsaddress = "ws://"+url.hostname+":"+url.port+"/ChatApp/chat";
-	var wsmessage = "ws://"+url.hostname+":"+url.port+"/ChatApp/messages";
+	var wsmessage = "ws://"+url.hostname+":"+url.port+"/ChatApp/messages/"+username;
 	
 	try{
 		socket = new WebSocket(wsaddress);
@@ -79,15 +79,31 @@ app.controller('chatController',['$scope','$location', '$rootScope', function($s
 			
 			var user = JSON.parse(sessionStorage.getItem('user'));
 			var d = new Date;
-			var m = {
-					content : $scope.messageContent,
-					date    : d,
-					subject : "",
-					to      : null,
-					from    : user
-			};
 			
+			if($scope.messageContent.indexOf("<private>:") != -1){
+				var params = $scope.messageContent.split("<private>:");
+				var userTo = {
+						username : params[0].trim()
+				};
+				
+				var m      = {
+							 content : params[1].trim(),
+							 date    : d,
+							 subject : "",
+							 to      : userTo,
+							 from    : user
+				};
+			}else{
+				var m = {
+						content : $scope.messageContent,
+						date    : d,
+						subject : "",
+						to      : null,
+						from    : user
+				};
+			}			
 			messageSocket.send(JSON.stringify(m));
+			$scope.messageContent = "";
 			
 		}
 		

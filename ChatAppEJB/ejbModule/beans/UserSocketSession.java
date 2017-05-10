@@ -21,10 +21,12 @@ import javax.websocket.Session;
 public class UserSocketSession implements UserSocketSessionLocal{
 
     private Map<String, Session> sessionMap;
+    private Map<String, String> privateMessage;
     
     @PostConstruct
     public void initialise(){
-        sessionMap = new HashMap<String, Session>();
+        sessionMap     = new HashMap<String, Session>();
+        privateMessage = new HashMap<String, String>();
     }
 
     @Override
@@ -34,7 +36,31 @@ public class UserSocketSession implements UserSocketSessionLocal{
             sessionMap.put(username, value);
         
     }
-
+    
+    @Override
+    @Lock(LockType.WRITE)
+    public void addPrivateMessage(String sessionId, String username){
+        if(!isUserActive(sessionId))
+            privateMessage.put(sessionId, username);
+    }
+    
+    @Override
+    @Lock(LockType.WRITE)
+    public void removePrivateMessage(String sessionId){
+        if(isUserActive(sessionId))
+            privateMessage.remove(sessionId);
+        
+    }
+    
+    @Override
+    @Lock(LockType.READ)
+    public String getPrivateMessage(String sessionId){
+        if(isUserActive(sessionId))
+            return privateMessage.get(sessionId);
+        
+        return null;
+    }
+    
     @Override
     @Lock(LockType.WRITE)
     public void removeUserSession(String username) {
@@ -47,6 +73,12 @@ public class UserSocketSession implements UserSocketSessionLocal{
     @Lock(LockType.READ)
     public boolean isSessionActive(String username) {
         return sessionMap.containsKey(username);
+    }
+    
+    @Override
+    @Lock(LockType.READ)
+    public boolean isUserActive(String sessionId){
+        return privateMessage.containsKey(sessionId);
     }
     
     @Override

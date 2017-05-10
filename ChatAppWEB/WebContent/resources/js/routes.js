@@ -15,9 +15,6 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 		.when('/chat', {
 			templateUrl: 'resources/html/chat.html'
 		})
-		.when('/solo/:user', {
-			templateUrl: 'resources/html/solo.html'
-		})
 		
 	if(window.history && window.history.pushState){
 		$locationProvider.html5Mode({

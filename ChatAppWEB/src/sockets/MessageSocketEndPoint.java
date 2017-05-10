@@ -12,6 +12,7 @@ import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +22,7 @@ import beans.UserSocketSessionLocal;
 import model.Message;
 import restClient.UserRestClientLocal;
 
-@ServerEndpoint("/messages")
+@ServerEndpoint("/messages/{user}")
 @MessageDriven(
         activationConfig = { 
                 @ActivationConfigProperty(propertyName  = "destinationType", 
@@ -42,10 +43,16 @@ public class MessageSocketEndPoint implements MessageListener{
     
     
     @OnOpen
-    public void onOpen(Session session){
+    public void onOpen(@PathParam("user") String user, Session session){
         storeSession(session.getId(), session);
+        storePrivate(session.getId(), user);
     }
     
+    private void storePrivate(String id, String user) {
+        if(!userSession.isUserActive(id))
+            userSession.addPrivateMessage(id, user);
+    }
+
     @OnClose
     public void onClose(Session session){
         userSession.removeUserSession(session);
@@ -78,6 +85,18 @@ public class MessageSocketEndPoint implements MessageListener{
                 if(msg.getTo() == null){
                     for(Session s : userSession.getAllSessions())   
                         s.getBasicRemote().sendText(output);
+                }else{
+                    String username = msg.getTo().getUsername();
+          
+                    for(Session s : userSession.getAllSessions()){
+                        if(userSession.getPrivateMessage(s.getId()) == null)
+                            continue;
+                        if(userSession.getPrivateMessage(s.getId()).equals(username)){
+                            s.getBasicRemote().sendText(output); 
+                            break;
+                        }
+                    }
+                        
                 }
             }
             catch (JMSException | IOException e) { e.printStackTrace(); }
