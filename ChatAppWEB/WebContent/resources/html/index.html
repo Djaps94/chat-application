@@ -19,11 +19,18 @@
 <script src="resources/js/controller/loginController.js"></script>
 <script src="resources/js/controller/logoutController.js"></script>
 <script src="resources/js/controller/chatController.js"></script>
+<style type="text/css">
+@font-face {
+    font-family: "Mightype Script";
+    src: url('resources/Mightype Script.otf');
+}
+</style>
+
 </head>
 
-<body ng-app="myApplication">
+<body ng-app="myApplication" style="background-image: url('resources/images/billie-holiday.png');">
 <div ng-controller="logoutController">
-	<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+	<nav class="navbar navbar-toggleable-md navbar-light bg-faded" style="background-color: #008c9e">
 	  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 	    <span class="navbar-toggler-icon"></span>
 	  </button>
@@ -32,7 +39,7 @@
 	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 	    <ul class="navbar-nav mr-auto">
 	      <li class="nav-item">
-	        <a class="nav-link" href="#!/login">Get started</a>
+	        <a class="nav-link" href="#!/main">Get started</a>
 	      </li>
 	      <li class="nav-item">
 	        <a class="nav-link" href="#!/login">Sign in</a>
@@ -41,7 +48,7 @@
 	        <a class="nav-link" href="#!/chat">All chat<span class="sr-only">(current)</span></a>
 	      </li>	
 	      <li class="nav-item">
-	        <a class="nav-link" href="#" ng-click=logout() ng-if="logButton">Logout</a>
+	        <a class="nav-link" href="#" ng-click=logout() ng-show="logButton">Logout</a>
 	      </li>
 	    </ul>
 	  </div>

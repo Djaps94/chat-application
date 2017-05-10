@@ -1,19 +1,19 @@
-<div class="row chat-wrap" style="margin-top: 5%;" ng-controller="chatController">
+<div class="row" style="margin-top: 5%;" ng-controller="chatController">
 
         <!-- Contacts & Conversations -->
-        <div class="col-sm-2" style="float:left;margin-left: 5%;margin-right: 3%;">
+        <div class="col-sm-2" style="float:left;margin-left: 5%;margin-right: 3%; background-color: #008c9e;">
 
-            <div style="margin-bottom: 4%;">
+            <div>
                 <div class="row header">
                     <div class="chat-header">
                         <h4>Online users</h4>
                     </div>
                 </div>
             </div>
-                <div class="row content-wrap">
+                <div class="row content-wrap" style="background-color: #005f9e;opacity: 0.3;">
                     <div class="conversation btn" ng-repeat="u in objectList.activeUsers">
                         <div class="media-body">
-                            <h5 class="media-heading" id="contactName"><a ng-href="#!/solo/{{ u.username }}">{{ u.username }}</a></h5>
+                            <h5 class="media-heading" id="contactName" style="color: black;">{{ u.username }}</h5>
                             <small class="pull-right time"><i>Online</i></small>
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                 <!--Message box & Send Button-->
                 <div class="row send-wrap">
                     <div class="send-message">
-                        <div class="message-text">
+                        <div class="message-text" style="background-color: #008c9e">
                             <textarea ng-model="messageContent" class="no-resize-bar form-control" rows="2" placeholder="Write a message..."></textarea>
                         </div>
                         <div class="send-button">
