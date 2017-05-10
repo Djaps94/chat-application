@@ -43,7 +43,7 @@ app.controller('chatController',['$scope','$location', '$rootScope', function($s
 		
 		socket.onmessage = function(message){
 			var users = JSON.parse(message.data);
-			if(users.constructor !== Array)
+			if(users.hasOwnProperty('date'))
 				return
 			$scope.$apply(function(){
 				$scope.objectList.activeUsers = users;
@@ -68,6 +68,7 @@ app.controller('chatController',['$scope','$location', '$rootScope', function($s
 			if(msg != null || msg != undefined){
 				$scope.$apply(function(){
 					$scope.messageList.messages.push(msg);
+					$scope.messageContent = "";
 				});
 			}
 		}

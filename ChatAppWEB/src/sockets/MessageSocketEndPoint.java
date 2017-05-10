@@ -1,9 +1,13 @@
 package sockets;
 
+import java.io.IOException;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
+import javax.jms.JMSException;
 import javax.jms.MessageListener;
+import javax.jms.ObjectMessage;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -12,9 +16,10 @@ import javax.websocket.server.ServerEndpoint;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+import beans.HostManagmentLocal;
 import beans.UserSocketSessionLocal;
 import model.Message;
+import restClient.UserRestClientLocal;
 
 @ServerEndpoint("/messages")
 @MessageDriven(
@@ -28,6 +33,13 @@ public class MessageSocketEndPoint implements MessageListener{
     
     @EJB
     private UserSocketSessionLocal userSession;
+    
+    @EJB
+    private UserRestClientLocal userRestSender;
+    
+    @EJB
+    private HostManagmentLocal hostBean;
+    
     
     @OnOpen
     public void onOpen(Session session){
@@ -45,10 +57,7 @@ public class MessageSocketEndPoint implements MessageListener{
             try{
                 ObjectMapper mapper = new ObjectMapper();
                 Message msg         = mapper.readValue(message, Message.class);
-                if(msg.getTo() == null){
-                    for(Session s : userSession.getAllSessions())   
-                        s.getBasicRemote().sendText(message);
-                }
+                hostBean.getAllHosts().forEach(host -> userRestSender.publishMessage(host.getAdress(), msg));
             }catch(Exception e) { e.printStackTrace(); }
         }
     }
@@ -61,7 +70,18 @@ public class MessageSocketEndPoint implements MessageListener{
 
     @Override
     public void onMessage(javax.jms.Message message) {
-        // TODO Auto-generated method stub
+        if(message instanceof ObjectMessage){
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                Message msg         = (Message) ((ObjectMessage) message).getObject();
+                String output       = mapper.writeValueAsString(msg);
+                if(msg.getTo() == null){
+                    for(Session s : userSession.getAllSessions())   
+                        s.getBasicRemote().sendText(output);
+                }
+            }
+            catch (JMSException | IOException e) { e.printStackTrace(); }
+        }
         
     }
     

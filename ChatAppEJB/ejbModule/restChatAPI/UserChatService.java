@@ -9,9 +9,11 @@ import javax.ws.rs.core.MediaType;
 
 import beans.ChatNotificationLocal;
 import beans.HostManagmentLocal;
+import beans.MessageNotificationLocal;
 import beans.ResponseSocketMessageLocal;
 import jmsAPI.SocketMessage;
 import jmsAPI.UserJMSMessage;
+import model.Message;
 import util.NodesHandlerLocal;
 
 @Stateless
@@ -29,6 +31,9 @@ public class UserChatService {
     
     @EJB
     private ChatNotificationLocal chatSender;
+    
+    @EJB
+    private MessageNotificationLocal messageSender;
     
     
     @POST
@@ -63,6 +68,13 @@ public class UserChatService {
             
             chatSender.sendNotification();
         }
+    }
+    
+    @POST
+    @Path("/publish")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void publishMessage(Message message){
+        messageSender.sendMessage(message);
     }
     
 }
