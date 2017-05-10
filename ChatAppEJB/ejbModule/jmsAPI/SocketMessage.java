@@ -2,6 +2,8 @@ package jmsAPI;
 
 import java.io.Serializable;
 
+import model.User;
+
 public class SocketMessage implements Serializable{
 
     private static final long serialVersionUID = 1L;
@@ -25,6 +27,7 @@ public class SocketMessage implements Serializable{
     private String password;
     private String hostAddress;
     private String sessionId;
+    private User user;
     
     public SocketMessage() { }
     
@@ -77,5 +80,15 @@ public class SocketMessage implements Serializable{
 
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

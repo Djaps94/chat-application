@@ -3,7 +3,7 @@
         <!-- Contacts & Conversations -->
         <div class="col-sm-2" style="float:left;margin-left: 5%;margin-right: 3%;">
 
-            <div>
+            <div style="margin-bottom: 4%;">
                 <div class="row header">
                     <div class="chat-header">
                         <h4>Online users</h4>
@@ -11,7 +11,7 @@
                 </div>
             </div>
                 <div class="row content-wrap">
-                    <div class="conversation btn" ng-repeat="u in objectList.activeUsers" style="height: 10%;">
+                    <div class="conversation btn" ng-repeat="u in objectList.activeUsers">
                         <div class="media-body">
                             <h5 class="media-heading" id="contactName">{{ u.username }}</h5>
                             <small class="pull-right time"><i>Online</i></small>
@@ -28,7 +28,7 @@
             <div class="col-sm-9 section-wrap" id="Messages">
 
                 <!--Header-->
-                <div class="row header-wrap">
+                <div class="row header-wrap" style="margin-bottom: 4%;">
                     <div class="chat-header col-sm-12">
                         <h4>Chat room</h4>
                     </div>
@@ -36,60 +36,12 @@
 
                 <!--Messages-->
                 <div class="row content-wrap messages">
-                    <div class="msg">
+                    <div class="msg" ng-repeat="msg in messageList.messages">
                         <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
+                            <small class="pull-right time"><i class="fa fa-clock-o"></i>{{  msg.date }}</small>
 
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="col-sm-11">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit amet. Praesent venenatis turpis vitae purus semper, eget sagittis velit venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos...</small>
-                        </div>
-                    </div>
-                    <div class="msg">
-                        <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
-
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="col-sm-11">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit amet. Praesent venenatis turpis vitae purus semper, eget sagittis velit venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos...</small>
-                        </div>
-                    </div>
-                    <div class="msg">
-                        <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
-
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="col-sm-11">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit amet. Praesent venenatis turpis vitae purus semper, eget sagittis velit venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos...</small>
-                        </div>
-                    </div>
-                    <div class="msg">
-                        <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
-
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="col-sm-11">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit amet. Praesent venenatis turpis vitae purus semper, eget sagittis velit venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos...</small>
-                        </div>
-                    </div>
-                    <div class="msg">
-                        <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
-
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="col-sm-11">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit amet. Praesent venenatis turpis vitae purus semper, eget sagittis velit venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos...</small>
-                        </div>
-                    </div>
-                    <div class="msg">
-                        <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
-
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="col-sm-11">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit amet. Praesent venenatis turpis vitae purus semper, eget sagittis velit venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos...</small>
-                        </div>
-                    </div>
-                    <div class="msg">
-                        <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>
-
-                            <h5 class="media-heading">Walter White</h5>
-                            <small class="col-sm-11">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu pulvinar magna. Phasellus semper scelerisque purus, et semper nisl lacinia sit amet. Praesent venenatis turpis vitae purus semper, eget sagittis velit venenatis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos...</small>
+                            <h5 class="media-heading">{{ msg.from.username }}</h5>
+                            <small class="col-sm-11">{{ msg.content }}</small>
                         </div>
                     </div>
                 </div>
@@ -98,10 +50,10 @@
                 <div class="row send-wrap">
                     <div class="send-message">
                         <div class="message-text">
-                            <textarea class="no-resize-bar form-control" rows="2" placeholder="Write a message..."></textarea>
+                            <textarea ng-model="messageContent" class="no-resize-bar form-control" rows="2" placeholder="Write a message..."></textarea>
                         </div>
                         <div class="send-button">
-                            <a class="btn">Send <i class="fa fa-send"></i></a>
+                            <a class="btn" ng-click="sendMessage()">Send <i class="fa fa-send"></i></a>
                         </div>
                     </div>
                 </div>

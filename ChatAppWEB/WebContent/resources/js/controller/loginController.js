@@ -32,7 +32,7 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 		socket.onmessage = function(message){
 			var msg = JSON.parse(message.data);
 			switch(msg.messageType){
-			case 		  'LOGIN' : getToChat(msg.username, msg.password); 
+			case 		  'LOGIN' : getToChat(msg.user); 
 									break;
 			case  'ALREADY_LOGED' : $location.path("/chat");
 								    break;
@@ -69,11 +69,7 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 		return true;
 	}
 	
-	var getToChat = function(username, password){
-		var user = {
-				name : username,
-				pass : password,
-		};
+	var getToChat = function(user){
 		sessionStorage.setItem('user', JSON.stringify(user));
 		$rootScope.$apply(function(){
 			$location.path("/chat");

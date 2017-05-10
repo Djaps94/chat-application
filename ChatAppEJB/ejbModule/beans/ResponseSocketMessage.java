@@ -66,6 +66,7 @@ public class ResponseSocketMessage implements ResponseSocketMessageLocal{
     public void loginMessage(User user, SocketMessage.type messageType, String sessionId){
         try{
             SocketMessage message = new SocketMessage(user.getUsername(), user.getPassword(), messageType);
+            message.setUser(user);
             message.setSessionId(sessionId);
             ObjectMessage msg     = session.createObjectMessage(message);
             sender.send(msg);
