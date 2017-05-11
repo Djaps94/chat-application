@@ -14,6 +14,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
+import jmsAPI.UserJMSMessage;
 import model.Message;
 import model.User;
 
@@ -59,7 +60,9 @@ public class UserRestClient implements UserRestClientLocal{
     @Override
     public void logoutUser(String masterAddress, User user, String sessionId) {
         ResteasyWebTarget target = createResteasyClient("http://"+masterAddress+"/UserApp/rest/user/logout");
-        target.request().post(Entity.entity(user, MediaType.APPLICATION_JSON));
+        UserJMSMessage message = new UserJMSMessage(user, UserJMSMessage.types.LOGOUT);
+        message.setSessionId(sessionId);
+        target.request().post(Entity.entity(message, MediaType.APPLICATION_JSON));
     }
     
     @Override

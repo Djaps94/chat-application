@@ -57,8 +57,8 @@ public class UserService{
 	@POST
 	@Path("/logout")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void logout(User user){
-	    userMessages.logoutMessage(new UserJMSMessage(user, UserJMSMessage.types.LOGOUT));
+	public void logout(UserJMSMessage message){
+	    userMessages.logoutMessage(message);
 	}
 	
 	@GET
