@@ -77,18 +77,20 @@ public class ChatAppJMS implements MessageListener {
                     else if(user.getNotregistered())
                         socketSender.loginMessage(user, SocketMessage.type.NOT_REGISTERED, sessionId);
                 }else if(message.propertyExists("logout")){
-                    User logout = (User) ((ObjectMessage) message).getObject();
+                    User logout      = (User) ((ObjectMessage) message).getObject();
+                    String sessionId = (String) message.getObjectProperty("logout");
                     if(logout.getLogout()){
                         UserJMSMessage msg = new UserJMSMessage(logout, UserJMSMessage.types.REGISTER);
-                        //msg.setSessionId(sessionId);
-                        hostBean.getCurrentHost().getActiveUsers().remove(logout);
+                        msg.setSessionId(sessionId);
+                        hostBean.getCurrentHost().getActiveUsers().removeIf(element -> element.getUsername().equals(logout.getUsername()));
                         hostBean.getAllHosts().stream().filter(h -> !(h.getAdress().equals(hostBean.getOwnerAddress())))
                                                        .forEach(h -> nodeRequester.removeUser(h.getAdress(), msg));
                         
-                        socketSender.logoutMessage(logout, SocketMessage.type.LOGOUT, "");
+                        socketSender.logoutMessage(logout, SocketMessage.type.LOGOUT, sessionId);
+                        chatSender.sendNotification();
                       
                     }else
-                        socketSender.logoutMessage(logout, SocketMessage.type.NOT_LOGOUT, "");
+                        socketSender.logoutMessage(logout, SocketMessage.type.NOT_LOGOUT, sessionId);
                 }
             }
         }

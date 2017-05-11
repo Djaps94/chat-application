@@ -42,11 +42,13 @@ app.controller('chatController',['$scope','$location', '$rootScope', function($s
 		}
 		
 		socket.onmessage = function(message){
-			var users = JSON.parse(message.data);
+			var users 	 = JSON.parse(message.data);
+			var username = JSON.parse(sessionStorage.getItem('user')).username
 			if(users.hasOwnProperty('date'))
-				return
+				return;
 			$scope.$apply(function(){
-				$scope.objectList.activeUsers = users;
+				var arr = users.filter(element => element.username !== username);
+				$scope.objectList.activeUsers = arr;
 			});
 			console.log("Cao onMessage");
 		}
@@ -64,6 +66,8 @@ app.controller('chatController',['$scope','$location', '$rootScope', function($s
 		
 		messageSocket.onmessage = function(message){
 			var msg = JSON.parse(message.data);
+			if(msg instanceof Array)
+				return;
 			console.log("Message recieved");
 			if(msg != null || msg != undefined){
 				$scope.$apply(function(){

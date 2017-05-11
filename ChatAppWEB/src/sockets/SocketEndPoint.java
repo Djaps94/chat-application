@@ -11,6 +11,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -63,6 +64,12 @@ public class SocketEndPoint implements MessageListener{
         userSession.removeUserSession(session);
     }
     
+    @OnError
+    public void onError(Session session, Throwable throwable) {
+        System.out.println("Uleteo sam ovde");
+        userSession.removeUserSession(session);
+    }
+    
     @OnMessage
     public void onMessage(Session session, String socketMessage){
         if(session.isOpen()){
@@ -71,7 +78,7 @@ public class SocketEndPoint implements MessageListener{
                 SocketMessage message = mapper.readValue(socketMessage, SocketMessage.class);
                 switch(message.getMessageType()){
                 case    LOGIN: loginUser(message.getUsername(), message.getPassword(), session, message.getHostAddress()); break;
-                case   LOGOUT: logoutUser(message.getUsername(), message.getPassword(), session);break;
+                case   LOGOUT: logoutUser(message.getUser(), session);break;
                 case REGISTER: registerUser(message.getUsername(), message.getPassword(), session); break;
                 default: break;
                 
@@ -99,16 +106,7 @@ public class SocketEndPoint implements MessageListener{
             userRequester.loginUser(nodeHandler.getMasterAddress(), username, password, session.getId(), hostAddress);
     }
     
-    private void logoutUser(String username, String password, Session session){
-        
-        Optional<User> opt = hostBean.getCurrentHost().getRegisteredUsers().stream().filter(h -> h.getUsername().equals(username))
-                                                                        .findFirst();
-        User u = null;
-        if(opt.isPresent()){
-            u = opt.get();
-        }else{
-            u = new User(username, password);
-        }
+    private void logoutUser(User u, Session session){
         
         if(nodeHandler.isMaster())
             chatMessages.logoutMessage(u, session.getId());

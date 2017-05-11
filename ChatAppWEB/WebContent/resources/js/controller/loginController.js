@@ -6,6 +6,8 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 		$location.path("/chat");
 	}
 	
+	$scope.errorMessage = "";
+	
 	$scope.logInfo = {
 			show : false,
 			username : "",
@@ -32,9 +34,13 @@ app.controller('loginController', ['$scope', '$rootScope', '$location', function
 		socket.onmessage = function(message){
 			var msg = JSON.parse(message.data);
 			switch(msg.messageType){
-			case 		  'LOGIN' : getToChat(msg.user); 
+			case 		  'LOGIN' : $rootScope.$apply(function(){
+										$rootScope.logButton = true;	
+									});
+									getToChat(msg.user);
 									break;
 			case  'ALREADY_LOGED' : $location.path("/chat");
+									$scope.errorMessage = "Already logged";
 								    break;
 			case 'NOT_REGISTERED' : { warning(); }; 
 									break;

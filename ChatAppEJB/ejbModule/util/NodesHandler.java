@@ -86,7 +86,7 @@ public class NodesHandler implements NodesHandlerLocal{
     
     @PreDestroy
     public void destroy(){
-        if(masterIpAdress != null){
+        if(!isMaster()){
             nodeRequester.unregister(masterIpAdress, slaveAddress);
         }
     }

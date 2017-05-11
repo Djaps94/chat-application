@@ -3,32 +3,33 @@ var app = angular.module('logoutContr', []);
 app.controller('logoutController', ['$scope','$location','$rootScope', function($scope, $location, $rootScope){
 	
 	var url = window.location;
-	var wsaddress = "ws://"+url.hostname+":"+url.port+"/ChatApp/webchat";
+	var wsaddr = "ws://"+url.hostname+":"+url.port+"/ChatApp/webchat";
 	
-	$scope.logButton = false;
+	$rootScope.logButton = false;
 	
 	if(sessionStorage.getItem('user') != null){
-		$scope.logButton = true;
+		$rootScope.logButton = true;
 	}
 	
 	try{
-		socket = new WebSocket(wsaddress);
+		socketLogout = new WebSocket(wsaddr);
 		
-		socket.onopen = function(){
+		socketLogout.onopen = function(){
 			console.log("Open logout socket");
 		}
 		
-		socket.onclose = function(){
+		socketLogout.onclose = function(){
 			socket.close();
 			console.log("Close logout socket");
 		}
 		
-		socket.onmessage = function(message){
+		socketLogout.onmessage = function(message){
 			var msg = JSON.parse(message.data);
 			switch(msg.messageType){
-			case 	 'LOGOUT' : sessionStorage.clear(); 
+			case 	 'LOGOUT' : sessionStorage.removeItem('user'); 
 								$rootScope.$apply(function(){
 									$location.path('/register');
+									$scope.logButton = false;
 								}); break;
 			case 'NOT_LOGOUT' : socket.close(); break;
 			
@@ -39,22 +40,19 @@ app.controller('logoutController', ['$scope','$location','$rootScope', function(
 		console.log("Error opening socket");
 	}
 	
-	
-	
 	$scope.logout = function(){
-		out();
-	};
-	
-	
-	var out = function(){
-		var user = JSON.parse(sessionStorage.getItem('user'));
+		var userSend = JSON.parse(sessionStorage.getItem('user'));
 		var socketMessage = {
-				username : user.name,
-				password : user.pass,
+				user        : userSend,
 				messageType : 'LOGOUT'
 		};
 		
-		socket.send(JSON.stringify(socketMessage));
-	}
+		socketLogout.send(JSON.stringify(socketMessage));
+	};
+	
+	window.onbeforeunload = function(){
+		$scope.logout();
+		sessionStorage.removeItem('user');
+	};
 	
 }]);

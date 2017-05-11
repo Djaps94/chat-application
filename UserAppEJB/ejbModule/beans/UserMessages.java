@@ -81,14 +81,7 @@ public class UserMessages implements UserMessagesLocal{
             msg.setObjectProperty("login", message.getSessionId());
             sender.send(msg);
         }
-        catch (InvalidCredentialsException | JMSException e) { 
-            try{
-                TextMessage msg = session.createTextMessage();
-                msg.setStringProperty("error", "Invalid credentials");
-                sender.send(msg);
-            }
-            catch(Exception ex) { }
-        }
+        catch (InvalidCredentialsException | JMSException e) { }
     }
 
     @Override

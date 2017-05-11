@@ -104,6 +104,7 @@
 {
     padding: 8px 10px 5px;
     border-bottom: 1px solid #ddd;
+    border-color: aqua;
 }
 /* Message Sender */
 .message-wrap .media-heading

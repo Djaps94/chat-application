@@ -36,11 +36,11 @@
 
                 <!--Messages-->
                 <div class="row content-wrap messages">
-                    <div class="msg" ng-repeat="msg in messageList.messages" style="float:right;border-color: aqua;">
+                    <div class="msg" ng-repeat="msg in messageList.messages">
                         <div class="media-body">
-                            <small class="pull-right time"><i class="fa fa-clock-o"></i>{{  msg.date }}</small>
-
-                            <h5 class="media-heading">{{ msg.from.username }}</h5>
+                            <small class="com-sm-11" ng-if="msg.to != null" style="margin-right: 2%;">Private</small>
+                            <small class="pull-right time"><i class="fa fa-clock-o"></i>{{ msg.date }}</small>					
+                            <h5 class="media-heading">Sender: {{ msg.from.username }}</h5>
                             <small class="col-sm-11">{{ msg.content }}</small>
                         </div>
                     </div>

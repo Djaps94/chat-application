@@ -119,7 +119,8 @@ public class UserManagment implements UserManagmentLocal{
 			return null;
 		
 		if(activeUsers.stream().anyMatch(e -> e.getUsername().equals(logout.getUsername()))){
-			activeUsers.remove(logout);
+		    activeUsers.removeIf(element -> element.getUsername().equals(logout.getUsername()));
+		    
 			logout.setLogout(true);
 			return logout;
 		}

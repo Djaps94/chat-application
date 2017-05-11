@@ -35,7 +35,7 @@ public class UserAppJMS implements MessageListener {
         try { 
             UserJMSMessage m = (UserJMSMessage) ((ObjectMessage) message).getObject(); 
             switch(m.getMessageType()){
-            case      LOGIN: messageBean.loginMessage(m); break;
+            case      LOGIN: messageBean.loginMessage(m);        break;
             case     LOGOUT: messageBean.logoutMessage(m);       break;
             case   REGISTER: messageBean.registerMessage(m);     break;
             case REGISTERED: messageBean.getRegisteredMessage(); break;

@@ -64,8 +64,9 @@ public class UserChatService {
     @Consumes(MediaType.APPLICATION_JSON)
     public void removeUser(UserJMSMessage message){
         if(!nodeHandler.isMaster()){
-            hostBean.getCurrentHost().getActiveUsers().remove(message.getU());
+            hostBean.getCurrentHost().getActiveUsers().removeIf(element -> element.getUsername().equals(message.getU().getUsername()));
             
+            socketSender.logoutMessage(message.getU(), SocketMessage.type.LOGOUT, message.getSessionId());
             chatSender.sendNotification();
         }
     }
