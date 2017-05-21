@@ -16,7 +16,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import jmsAPI.UserJMSMessage;
 import model.Host;
-import model.User;
 
 @Stateless
 @Local(NodeRestClientLocal.class)
